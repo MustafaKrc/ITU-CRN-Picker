@@ -23,10 +23,10 @@ class UserConfig:
     __ending_date_str = getenv("EndingDate")
     ending_date = datetime.strptime(__ending_date_str, "%d.%m.%Y %H:%M:%S")
 
-    request_frequency = int(getenv("Frequency"))
+    request_frequency = float(getenv("Frequency"))
     request_frequency = max(1.1, request_frequency)
 
-    max_post_request = int(getenv("MaxPostRequest"))
+    max_post_request = float(getenv("MaxPostRequest"))
     max_post_request = float("inf") if max_post_request == -1 else max_post_request
 
     ECRN = list(map(str.strip, getenv("ECRN").split(",")))
