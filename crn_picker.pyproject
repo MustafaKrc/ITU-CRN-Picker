@@ -1,0 +1,19 @@
+{
+    "files": [
+        "ui/qml/controls/ToggleButton.qml",
+        "core/app.py",
+        "core/console.py",
+        "core/itu_login.py",
+        "main.py",
+        "core/crn_picker.py",
+        "ui/qml/main.qml",
+        "core/user_config.py",
+        "core/__init__.py",
+        "ui/qml/controls/TopBarButton.qml",
+        "ui/qml/controls/LeftMenuButton.qml",
+        "ui/qml/Enums.qml",
+        "ui/qml/pages/HomePage.qml",
+        "ui/qml/pages/SettingsPage.qml",
+        "ui/qml/pages/MySchedulesPage.qml"
+    ]
+}
