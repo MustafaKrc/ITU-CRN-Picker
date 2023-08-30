@@ -1,0 +1,2 @@
+module core.ItuLogin
+typeinfo itu_login.qmltypes

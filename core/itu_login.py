@@ -1,11 +1,16 @@
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from .user_config import UserConfig
 
+from PySide6.QtQml import QmlElement
+from PySide6.QtCore import QObject, Slot, Signal
 
-class ItuLogin:
+QML_IMPORT_NAME = "core.ItuLogin"
+QML_IMPORT_MAJOR_VERSION = 1
+QML_IMPORT_MINOR_VERSION = 0
+
+@QmlElement
+class ItuLogin(QObject):
     """Handles the logging into ITU systems.
 
     Simulates chrome web browser to grab the authorization token.
@@ -14,15 +19,17 @@ class ItuLogin:
 
     This class will install chrome web driver for selenium when it is necessary."""
 
-    def __init__(self):
-        self.username = UserConfig.username
-        self.password = UserConfig.password
+    def __init__(self, parent = None):
+        QObject.__init__(self, parent)
+
+        self.username = ""
+        self.password = ""
 
         options = webdriver.ChromeOptions()
         options.add_argument("headless")  # makes chrome invisible
         options.add_argument("--log-level=3")  # hides chrome error messages.
 
-        self.__service = ChromeService(executable_path=ChromeDriverManager().install())
+        self.__service = ChromeService()
         self.driver = webdriver.Chrome(service=self.__service, chrome_options=options)
 
     def login(self):
@@ -71,6 +78,7 @@ class ItuLogin:
         self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci")
         self.setAuthToken(self.driver.requests)
 
+    @Slot(result = bool)
     def isLoggedIn(self):
         """Checks if user is logged in ITU system"""
         self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci")

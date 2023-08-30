@@ -1,0 +1,40 @@
+[
+    {
+        "classes": [
+            {
+                "className": "ItuLogin",
+                "qualifiedClassName": "ItuLogin",
+                "object": true,
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ],
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "name": "isLoggedIn",
+                        "arguments": [],
+                        "returnType": "bool"
+                    }
+                ]
+            }
+        ],
+        "outputRevision": 68,
+        "QML_IMPORT_NAME": "core.ItuLogin",
+        "QML_IMPORT_MAJOR_VERSION": 1,
+        "QML_IMPORT_MINOR_VERSION": 0,
+        "QT_MODULES": [
+            "QtCore",
+            "QtQml"
+        ],
+        "inputFile": "C:/Users/mustafa/Desktop/qt_projects/crn_picker/core/itu_login.py"
+    }
+]

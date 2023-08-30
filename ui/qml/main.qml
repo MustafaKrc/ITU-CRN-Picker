@@ -315,7 +315,7 @@ Window {
                             id: buttonCreateSchedule
                             width: leftMenu.width
                             text: qsTr("Create a Schedule")
-                            buttonIconSource: "../../images/svg_images/takvimolustur.svg"
+                            buttonIconSource: "../../images/svg_images/calendar_add_icon.svg"
                             isActiveMenu: false
                         }
                     }
@@ -339,6 +339,19 @@ Window {
 
                             stackView.replace(stackView.get(0),pageSettings)
                         }
+                    }
+
+                    Label {
+                        id: label1
+                        color: "#ffffff"
+                        text: qsTr("Version Alpha")
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: buttonSettings.bottom
+                        anchors.bottom: parent.bottom
+                        horizontalAlignment: Text.AlignHCenter
+                        anchors.topMargin: 5
+                        font.pointSize: 7
                     }
                 }
 
