@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 import "../controls"
+import "../../../core/ItuLogin"
 
 Rectangle {
     id: login
@@ -13,6 +14,31 @@ Rectangle {
     radius: 10
     anchors.verticalCenter: parent.verticalCenter
     anchors.horizontalCenter: parent.horizontalCenter
+
+    property bool isLoggedIn: false
+    property real compactModeWidth: 250
+    property real compactModeHeight: 100
+
+    onWidthChanged: console.log(width)
+
+    /*
+    property bool isLoggedIn: logger.isLoggedIn()
+
+        ItuLogin{
+        id: logger
+
+        Component.onCompleted: console.log(logger.isLoggedIn())
+    }
+*/
+
+    MouseArea{
+        id: logoutMouseArea
+        anchors.fill: parent
+        visible: false
+        opacity: 0
+        onClicked: isLoggedIn = false // will open a box to confirm logout or show user info too
+        // add hover cursor change
+    }
 
     ColumnLayout {
         id: loginLayout
@@ -42,6 +68,19 @@ Rectangle {
                 sourceSize.height: 170
                 sourceSize.width: 170
                 fillMode: Image.PreserveAspectFit
+            }
+
+            Text {
+                id: loginCompactInfo
+                visible: false
+                opacity: 0
+                color: "#ffffff"
+                text: qsTr("Logged in as USERNAME")
+                anchors.verticalCenter: image.verticalCenter
+                anchors.left: image.right
+                anchors.right: parent.right
+                font.pixelSize: 15
+                wrapMode: Text.WordWrap
             }
         }
 
@@ -140,8 +179,6 @@ Rectangle {
                     Layout.leftMargin: 15
                     Layout.maximumHeight: 75
                     Layout.maximumWidth: 350
-
-                    //echo echoMode:
                     echoMode: TextInput.Password
 
 
@@ -233,12 +270,93 @@ Rectangle {
                     Layout.rowSpan: 1
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.maximumHeight: 150
-                    Layout.maximumWidth: 500
+                    Layout.maximumWidth: 350
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+
+                    onClicked: isLoggedIn = true
 
                 }
             }
         }
     }
+
+    states: [
+        State {
+            name: "Compact Logged In"
+            when: login.isLoggedIn
+
+            AnchorChanges {
+                target: login
+                anchors.verticalCenter: undefined
+                anchors.horizontalCenter: undefined
+                anchors.top: parent.top
+                anchors.right: parent.right
+            }
+
+            PropertyChanges {
+                target: login
+
+                height: compactModeHeight
+                width: compactModeWidth
+
+            }
+
+            PropertyChanges {
+                target: logoutMouseArea
+                visible: true
+            }
+
+            PropertyChanges {
+                target: userCredentials
+                visible: false
+                opacity: 0
+            }
+
+            PropertyChanges {
+                target: buttons
+                visible: false
+                opacity: 0
+            }
+
+            PropertyChanges {
+                target: image
+                anchors.horizontalCenterOffset: (-1* compactModeWidth/2) + image.width / 2
+            }
+
+            PropertyChanges {
+                target: loginCompactInfo
+                visible: true
+                text: qsTr("Logged in as USERNAME ")
+                font.pixelSize: 15
+                opacity: 1
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: ""; to: "Compact Logged In"; reversible: false
+            ParallelAnimation {
+                NumberAnimation { target: login; properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: login; properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "visible"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "anchors.horizontalCenterOffset"; duration: 500; easing.type: Easing.InOutQuad }
+                AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+            }
+        },
+        Transition {
+            from: "Compact Logged In"; to: ""; reversible: false
+            ParallelAnimation {
+                NumberAnimation { target: login; properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: login; properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "visible"; duration: 10; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "anchors.horizontalCenterOffset"; duration: 500; easing.type: Easing.InOutQuad }
+                AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+            }
+        }
+
+    ]
 }

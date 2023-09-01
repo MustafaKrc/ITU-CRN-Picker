@@ -7,6 +7,9 @@ import "../panels"
 
 
 Item {
+    id: homePage
+
+
     Rectangle {
         id: rectangle
         color: "#2c313c"
@@ -19,9 +22,33 @@ Item {
         id: loginPanel
         width: parent.width/3
         height: 3*parent.height/4
+        visible: true
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+        compactModeHeight: 100
+        compactModeWidth: 250
     }
+    states: [
+        State {
+            name: "Logged In"
+            when: loginPanel.isLoggedIn
+
+            PropertyChanges {
+                target: loginPanel
+                radius: 0
+            }
+
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: ""; to: "Logged In"; reversible: true
+            ParallelAnimation {
+                NumberAnimation { properties: "radius"; duration: 500; easing.type: Easing.InOutQuad}
+            }
+        }
+    ]
     /*
     Loader{
         id: loaderLogin
