@@ -7,7 +7,7 @@
         "main.py",
         "core/crn_picker.py",
         "ui/qml/main.qml",
-        "core/user_config.py",
+        "core/user.py",
         "core/__init__.py",
         "ui/qml/controls/TopBarButton.qml",
         "ui/qml/controls/LeftMenuButton.qml",
@@ -17,6 +17,10 @@
         "ui/qml/pages/MySchedulesPage.qml",
         "ui/qml/panels/LoginPanel.qml",
         "ui/qml/controls/CustomButton.qml",
-        "ui/qml/controls/SettingSwitchButton.qml"
+        "ui/qml/controls/SettingSwitchButton.qml",
+        "ui/qml/panels/AppPanel.qml",
+        "config.ini",
+        "schedules.json",
+        "core/schedule_list_model.py"
     ]
 }

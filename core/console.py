@@ -1,5 +1,5 @@
 import os
-from .user_config import UserConfig
+from .user import UserConfig
 
 
 class Console:

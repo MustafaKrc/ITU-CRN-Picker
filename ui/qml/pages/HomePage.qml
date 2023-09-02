@@ -10,13 +10,13 @@ Item {
     id: homePage
 
 
+
     Rectangle {
-        id: rectangle
+        id: background
         color: "#2c313c"
         anchors.fill: parent
 
     }
-
 
     LoginPanel{
         id: loginPanel
@@ -25,9 +25,23 @@ Item {
         visible: true
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        compactModeHeight: 100
-        compactModeWidth: 250
+
+        compactModeBigWidth: 250
+        compactModeBigHeight: 100
+
+        compactModeSmallWidth: 75
+        compactModeSmallHeight: 75
+        //compactMode: LoginPanel.CompactMode.SmallTopRight
     }
+
+    AppPanel {
+        id: appPanel
+        anchors.fill: parent
+        backgroundColor: "#00ffffff"
+        opacity: 0
+        visible: false
+    }
+
     states: [
         State {
             name: "Logged In"
@@ -38,6 +52,13 @@ Item {
                 radius: 0
             }
 
+            PropertyChanges {
+                target: appPanel
+                opacity: 1
+                visible: true
+            }
+
+
         }
     ]
 
@@ -46,6 +67,8 @@ Item {
             from: ""; to: "Logged In"; reversible: true
             ParallelAnimation {
                 NumberAnimation { properties: "radius"; duration: 500; easing.type: Easing.InOutQuad}
+                NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad}
+                NumberAnimation { properties: "visible"; duration: 500; easing.type: Easing.InOutQuad}
             }
         }
     ]

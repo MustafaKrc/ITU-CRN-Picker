@@ -1,6 +1,6 @@
 import requests
 from json import loads
-from .user_config import UserConfig
+from .user import UserConfig
 
 
 class CrnPicker:

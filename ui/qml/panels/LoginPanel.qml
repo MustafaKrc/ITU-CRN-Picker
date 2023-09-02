@@ -16,10 +16,17 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
 
     property bool isLoggedIn: false
-    property real compactModeWidth: 250
-    property real compactModeHeight: 100
+    property real compactModeBigWidth: 250
+    property real compactModeBigHeight: 100
+    property real compactModeSmallWidth: 75
+    property real compactModeSmallHeight: 75
+    property int compactMode: LoginPanel.CompactMode.BigTopRight
 
-    onWidthChanged: console.log(width)
+
+    enum CompactMode{
+        BigTopRight,
+        SmallTopRight
+    }
 
     /*
     property bool isLoggedIn: logger.isLoggedIn()
@@ -281,11 +288,31 @@ Rectangle {
         }
     }
 
+    Image {
+        id: imageTopRight
+        width: 50
+        height: 50
+        visible: false
+        opacity: 0
+        source: "../../images/svg_images/guest_icon.svg"
+        sourceSize.height: 170
+        sourceSize.width: 170
+        fillMode: Image.PreserveAspectFit
+
+        x: login.parent.width - width - 10
+        y: 10
+
+        MouseArea{
+            anchors.fill: parent
+            onClicked: login.isLoggedIn = false
+        }
+
+    }
+
     states: [
         State {
-            name: "Compact Logged In"
-            when: login.isLoggedIn
-
+            name: "Compact Small Top Right"
+            when: login.isLoggedIn && login.compactMode === LoginPanel.CompactMode.BigTopRight
             AnchorChanges {
                 target: login
                 anchors.verticalCenter: undefined
@@ -297,8 +324,8 @@ Rectangle {
             PropertyChanges {
                 target: login
 
-                height: compactModeHeight
-                width: compactModeWidth
+                height: compactModeBigHeight
+                width: compactModeBigWidth
 
             }
 
@@ -321,7 +348,7 @@ Rectangle {
 
             PropertyChanges {
                 target: image
-                anchors.horizontalCenterOffset: (-1* compactModeWidth/2) + image.width / 2
+                anchors.horizontalCenterOffset: ( -1 * compactModeBigWidth / 2) + image.width / 2
             }
 
             PropertyChanges {
@@ -331,23 +358,69 @@ Rectangle {
                 font.pixelSize: 15
                 opacity: 1
             }
+        },
+        State {
+            name: "Compact Small Top Right Image"
+            when: login.isLoggedIn && login.compactMode === LoginPanel.CompactMode.SmallTopRight
+
+
+            AnchorChanges {
+                target: login
+                anchors.verticalCenter: undefined
+                anchors.horizontalCenter: undefined
+                anchors.top: parent.top
+                anchors.right: parent.right
+            }
+
+            PropertyChanges {
+                target: login
+
+                height: compactModeSmallWidth
+                width: compactModeSmallWidth
+
+            }
+
+            PropertyChanges {
+                target: logoutMouseArea
+                visible: true
+            }
+
+            PropertyChanges {
+                target: userCredentials
+                visible: false
+                opacity: 0
+            }
+
+            PropertyChanges {
+                target: buttons
+                visible: false
+                opacity: 0
+            }
+
+            PropertyChanges {
+                target: image
+                height: compactModeSmallWidth
+                width: compactModeSmallWidth
+            }
+
+
         }
     ]
 
     transitions: [
         Transition {
-            from: ""; to: "Compact Logged In"; reversible: false
+            from: ""; to: "Compact Small Top Right"; reversible: false
             ParallelAnimation {
                 NumberAnimation { target: login; properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: login; properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
                 NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad }
-                NumberAnimation { properties: "visible"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "visible"; duration: 750; easing.type: Easing.InOutQuad }
                 NumberAnimation { properties: "anchors.horizontalCenterOffset"; duration: 500; easing.type: Easing.InOutQuad }
                 AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
             }
         },
         Transition {
-            from: "Compact Logged In"; to: ""; reversible: false
+            from: "Compact Small Top Right"; to: ""; reversible: false
             ParallelAnimation {
                 NumberAnimation { target: login; properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: login; properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
@@ -355,6 +428,28 @@ Rectangle {
                 NumberAnimation { properties: "visible"; duration: 10; easing.type: Easing.InOutQuad }
                 NumberAnimation { properties: "anchors.horizontalCenterOffset"; duration: 500; easing.type: Easing.InOutQuad }
                 AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+            }
+        },
+        Transition {
+            from: ""; to: "Compact Small Top Right Image"; reversible: false
+            ParallelAnimation {
+                NumberAnimation { properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "visible"; duration: 750; easing.type: Easing.InOutQuad }
+                AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+
+            }
+        },
+        Transition {
+            from: "Compact Small Top Right Image"; to: ""; reversible: false
+            ParallelAnimation {
+                NumberAnimation { properties: "height"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "width"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "opacity"; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { properties: "visible"; duration: 10; easing.type: Easing.InOutQuad }
+                AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+
             }
         }
 

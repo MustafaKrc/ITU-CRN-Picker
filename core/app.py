@@ -1,6 +1,6 @@
 "Entry point for ITU CRN Picking app"
 
-from .user_config import UserConfig
+from .user import UserConfig
 from .crn_picker import CrnPicker
 from .itu_login import ItuLogin
 from .console import Console
