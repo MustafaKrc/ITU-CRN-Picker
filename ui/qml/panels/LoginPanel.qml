@@ -4,7 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 import "../controls"
-import "../../../core/ItuLogin"
+
+import ItuLogin 1.0 // qt creator throws QML module not found error, but this is just a visual error
 
 Rectangle {
     id: login
@@ -27,11 +28,8 @@ Rectangle {
         BigTopRight,
         SmallTopRight
     }
-
-    /*
-    property bool isLoggedIn: logger.isLoggedIn()
-
-        ItuLogin{
+/*
+    ItuLogin{
         id: logger
 
         Component.onCompleted: console.log(logger.isLoggedIn())

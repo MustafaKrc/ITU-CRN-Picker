@@ -2,7 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../../../core/ItuLogin" 1.0
+
+//import "../../../core/ItuLogin" 1.0
+//import core.ItuLogin 1.0
 import "../panels"
 
 
@@ -72,6 +74,15 @@ Item {
             }
         }
     ]
+
+    /*
+    ItuLogin{
+                id: logger
+
+                Component.onCompleted: console.log(logger.isLoggedIn())
+            }
+    */
+
     /*
     Loader{
         id: loaderLogin

@@ -3,6 +3,13 @@ import configparser
 import json
 from dataclasses import dataclass
 
+
+from PySide6.QtQml import QmlElement
+from PySide6.QtCore import QObject, Slot, Signal
+
+
+
+
 @dataclass
 class Schedule:
 
@@ -45,7 +52,7 @@ class UserSchedules:
         return len(self.schedules)
 
 
-class UserConfig:
+class UserConfig(QObject):
     """Class for user settings and information.
 
     Grabs all the information from .env file
@@ -54,6 +61,7 @@ class UserConfig:
 
     config = configparser.ConfigParser()
     config.read('../config.ini')
+
 
 
     #username = getenv("ITUUserName")
@@ -76,6 +84,10 @@ class UserConfig:
 
     #ECRN = [] if ECRN[0] == "" else ECRN
     #SCRN = [] if SCRN[0] == "" else SCRN
+
+
+
+    # currentScheduleIndex
 
     auth_token = None
 

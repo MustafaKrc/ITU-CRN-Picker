@@ -14,6 +14,10 @@ RowLayout{
     property bool isEnabled: false // enabled başka var galiba ama bulamadım
     property string settingText: "placeholder text"
     property color settingTextColor: "#ffffff"
+    property int settingTextSize: 12
+
+    property int switchHeight: 15
+    property int switchWidth: 30
 
 
     Rectangle {
@@ -30,17 +34,16 @@ RowLayout{
 
         id: buttonSwitch
 
-        width: 30
-        height: 15
+        width: switchWidth
+        height: switchHeight
 
         visible: true
         color: buttonSwitch.hovered ? buttonColorMouseOver : buttonColorDefault
         clip: false
         radius: 25
         Layout.minimumHeight: 15
-        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignVCenter
 
-        implicitWidth: height * 2
 
         Rectangle{
             id: circle
@@ -54,6 +57,17 @@ RowLayout{
         }
     }
 
+
+    Text {
+        id: textDescription
+        text: settingText
+
+        font.pixelSize: settingTextSize
+        Layout.alignment: Qt.AlignVCenter
+        Layout.minimumHeight: 12
+        Layout.fillWidth: true
+        color: settingTextColor
+    }
 
     states: [
         State {
@@ -70,26 +84,18 @@ RowLayout{
 
     transitions: [
         Transition {
-        from: ""; to: "On State"; reversible: true
-        ParallelAnimation {
-            NumberAnimation { properties: "x"; duration: 500; easing.type: Easing.InOutQuad }
-            ColorAnimation { duration: 500 }
+            from: ""; to: "On State"; reversible: true
+            ParallelAnimation {
+                NumberAnimation { properties: "x"; duration: 500; easing.type: Easing.InOutQuad }
+                ColorAnimation { duration: 500 }
+            }
         }
-    }
-]
+    ]
 
 
 
 
 
-    Text {
-        id: textDescription
-        text: settingText
 
-        font.pixelSize: 12
-        Layout.minimumHeight: 12
-        Layout.fillWidth: true
-        color: settingTextColor
-    }
 
 }

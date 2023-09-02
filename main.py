@@ -3,11 +3,11 @@ import sys
 from pathlib import Path
 
 from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 #from core.itu_login import ItuLogin
 
-from core.user import UserConfig, UserSchedules
+from core.user import UserConfig
 from core.itu_login import ItuLogin
 from core.schedule_list_model import ScheduleListModel
 
@@ -19,6 +19,12 @@ if __name__ == "__main__":
 
     userSchedulesModel = ScheduleListModel()
     engine.rootContext().setContextProperty("userSchedulesModel", userSchedulesModel)
+
+    qmlRegisterType(UserConfig, 'UserConfig', 1, 0, 'UserConfig')
+    qmlRegisterType(ItuLogin, 'ItuLogin', 1, 0, 'ItuLogin')
+
+    #userConfig = UserConfig()
+    #engine.rootContext().setContextProperty("userConfig", userConfig)
 
     #engine.rootContext().setContextProperty("ItuLogin", ItuLogin())
 
