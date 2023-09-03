@@ -27,11 +27,11 @@ Item {
             }
 
             ListElement {
-                textSetting: "setting2"
+                textSetting: "Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 "
             }
 
             ListElement {
-                textSetting: "setting3"
+                textSetting: "Setting3"
             }
 
             ListElement {
@@ -40,12 +40,13 @@ Item {
         }
 
         delegate: SettingSwitchButton{
-            switchHeight: 30
-            switchWidth: 60
+
+            buttonColorDefault: "#20242d"
 
             settingText: textSetting
             isEnabled: true // will be fetched from UserConfig
-            settingTextSize: 50
+            width: listView.width
+            switchButtonMaxSize: 30
 
         }
 

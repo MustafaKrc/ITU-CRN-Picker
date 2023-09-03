@@ -7,7 +7,7 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 #from core.itu_login import ItuLogin
 
-from core.user import UserConfig
+from core.user import UserConfig, UserSchedules
 from core.itu_login import ItuLogin
 from core.schedule_list_model import ScheduleListModel
 

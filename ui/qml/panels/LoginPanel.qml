@@ -5,7 +5,7 @@ import QtQuick.Controls.Material
 
 import "../controls"
 
-import ItuLogin 1.0 // qt creator throws QML module not found error, but this is just a visual error
+//import ItuLogin 1.0 // qt creator throws QML module not found error, but this is just a visual error
 
 Rectangle {
     id: login
@@ -248,15 +248,15 @@ Rectangle {
 
                 SettingSwitchButton{
                     id: buttonRememberMe
-                    focus: false
-                    Layout.minimumHeight: 7
-                    Layout.preferredHeight: 3
-                    Layout.maximumHeight: 30
+                    Layout.preferredHeight: 1
+                    isEnabled: false
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.maximumHeight: 50
+                    Layout.minimumHeight: 12
                     Layout.fillHeight: true
-                    Layout.fillWidth: false
-                    buttonColorDefault: "#2c313c"
+                    Layout.fillWidth: true
 
+                    alignMode: SettingSwitchButton.Align.HorizontalCenter
                     settingText: "Remember Me"
 
                 }
@@ -266,13 +266,11 @@ Rectangle {
                 CustomButton{
                     id: buttonLogin
                     text: qsTr("Login")
-                    Layout.minimumHeight: 15
-                    Layout.preferredWidth: 1
+                    Layout.preferredHeight: 1
+                    Layout.minimumHeight: 35
                     Layout.bottomMargin: 10
                     Layout.rightMargin: 10
                     Layout.leftMargin: 10
-                    Layout.preferredHeight: 2
-                    Layout.rowSpan: 1
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.maximumHeight: 150
                     Layout.maximumWidth: 350

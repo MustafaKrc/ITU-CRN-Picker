@@ -1,78 +1,104 @@
 import QtQuick 2.15
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
-import QtQuick.Layouts
 
 
 
-RowLayout{
-    id: settingRow
-
+Item{
+    id: setting
     // properties
-    property color buttonColorDefault: "#1c1d20"
+    property color buttonColorDefault: "#2c313c"
     property color buttonColorMouseOver: "#1c1d20"
-    property bool isEnabled: false // enabled başka var galiba ama bulamadım
+
+    property bool isEnabled: false
+
     property string settingText: "placeholder text"
     property color settingTextColor: "#ffffff"
-    property int settingTextSize: 12
 
-    property int switchHeight: 15
-    property int switchWidth: 30
+    property int switchButtonMaxSize: 40
+
+    property int alignMode: SettingSwitchButton.Align.Left
+
+    width: 150
+    height: 50
 
 
-    Rectangle {
+    Item{
+        id: container
+        anchors.centerIn: parent
+        height: parent.height
+        width: Math.min(parent.width,
+                        alignMode === SettingSwitchButton.Align.Left ? parent.width
+                                                                     : buttonSwitch.width
+                                                                       + textDescription.paintedWidth
+                                                                       + textDescription.anchors.leftMargin
+                        )
+        Rectangle {
 
-        property bool hovered: false
-        MouseArea{
-            id: mousearea
-            anchors.fill: parent
-            onClicked: settingRow.isEnabled = !settingRow.isEnabled
-            hoverEnabled: true
-            onEntered: buttonSwitch.hovered = true
-            onExited: buttonSwitch.hovered = false
+            property bool hovered: false
+            MouseArea{
+                id: mousearea
+                anchors.fill: parent
+                onClicked: setting.isEnabled = !setting.isEnabled
+                hoverEnabled: true
+                onEntered: buttonSwitch.hovered = true
+                onExited: buttonSwitch.hovered = false
+            }
+
+            id: buttonSwitch
+
+
+            anchors.verticalCenter: parent.verticalCenter
+
+
+            height: Math.min(switchButtonMaxSize, parent.height)
+            width: height * 2
+            visible: true
+            color: buttonSwitch.hovered ? buttonColorMouseOver : buttonColorDefault
+            radius: 25
+
+            Rectangle{
+                id: circle
+                x: 6
+                width: parent.height * 0.8
+                height: parent.height * 0.8
+                radius: height / 2
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 0
+            }
         }
 
-        id: buttonSwitch
+        Text {
+            id: textDescription
+            text: settingText
+            anchors.left: buttonSwitch.right
+            anchors.leftMargin: 5
 
-        width: switchWidth
-        height: switchHeight
+            width: Math.min(implicitWidth, setting.width - buttonSwitch.width - anchors.leftMargin)
+            height: parent.height
 
-        visible: true
-        color: buttonSwitch.hovered ? buttonColorMouseOver : buttonColorDefault
-        clip: false
-        radius: 25
-        Layout.minimumHeight: 15
-        Layout.alignment: Qt.AlignVCenter
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
 
+            wrapMode: Text.WordWrap
+            color: settingTextColor
+            fontSizeMode: Text.Fit
 
-        Rectangle{
-            id: circle
-            x: 6
-            width: parent.height * 0.8
-            height: parent.height * 0.8
-            radius: height / 2
-            anchors.verticalCenter: parent.verticalCenter
-            state: "off state"
-            anchors.verticalCenterOffset: 0
+            minimumPixelSize: 10
+            minimumPointSize: 10
+            font.pointSize: 60
         }
     }
 
-
-    Text {
-        id: textDescription
-        text: settingText
-
-        font.pixelSize: settingTextSize
-        Layout.alignment: Qt.AlignVCenter
-        Layout.minimumHeight: 12
-        Layout.fillWidth: true
-        color: settingTextColor
+    enum Align{
+        HorizontalCenter,
+        Left
     }
 
     states: [
         State {
             name: "On State"
-            when: settingRow.isEnabled
+            when: setting.isEnabled
 
             PropertyChanges {
                 target: circle
@@ -91,11 +117,5 @@ RowLayout{
             }
         }
     ]
-
-
-
-
-
-
 
 }
