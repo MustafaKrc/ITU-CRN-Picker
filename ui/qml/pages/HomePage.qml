@@ -10,7 +10,8 @@ import "../panels"
 
 Item {
     id: homePage
-
+    property color secondaryColor: "#1f222a"
+    property color textColor: "#ffffff"
 
 
     Rectangle {
@@ -36,13 +37,38 @@ Item {
         //compactMode: LoginPanel.CompactMode.SmallTopRight
     }
 
-    AppPanel {
-        id: appPanel
-        anchors.fill: parent
-        backgroundColor: "#00ffffff"
+    Item{
+        id: app
         opacity: 0
         visible: false
+        Rectangle {
+            id: scheduleHeader
+            width: scheduleHeaderText.implicitWidth + 6 * scheduleHeaderText.anchors.margins
+            height: scheduleHeaderText.implicitHeight + 3 * scheduleHeaderText.anchors.margins
+            color: secondaryColor
+            radius: 22
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.topMargin: 50
+            anchors.leftMargin: 75
+
+            Text {
+                id: scheduleHeaderText
+                width: 205
+                color: textColor
+                text: qsTr("Current Schedule")
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                font.pixelSize: 25
+                horizontalAlignment: Text.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.margins: 5
+            }
+        }
+
     }
+
 
     states: [
         State {
@@ -55,7 +81,7 @@ Item {
             }
 
             PropertyChanges {
-                target: appPanel
+                target: app
                 opacity: 1
                 visible: true
             }

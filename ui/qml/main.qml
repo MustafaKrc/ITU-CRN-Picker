@@ -7,6 +7,7 @@ import Qt5Compat.GraphicalEffects
 import "./controls"
 import "./pages"
 // dont need to import qml files in same directory
+import core.UserConfig 1.0
 
 
 Window {
@@ -310,14 +311,6 @@ Window {
                                 stackView.replace(stackView.get(0),pageMySchedules)
                             }
                         }
-
-                        LeftMenuButton {
-                            id: buttonCreateSchedule
-                            width: leftMenu.width
-                            text: qsTr("Create a Schedule")
-                            buttonIconSource: "../../images/svg_images/calendar_add_icon.svg"
-                            isActiveMenu: false
-                        }
                     }
 
                     LeftMenuButton {
@@ -344,7 +337,7 @@ Window {
                     Label {
                         id: label1
                         color: "#ffffff"
-                        text: qsTr("Version Alpha")
+                        text: qsTr("Version ") + UserConfig.getSetting("about","version")
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: buttonSettings.bottom

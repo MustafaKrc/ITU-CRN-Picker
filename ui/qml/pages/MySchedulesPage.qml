@@ -1,5 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls
+import QtQuick.Layouts
+
+import "../controls"
 
 Item {
     id: mySchedulesPage
@@ -16,6 +19,10 @@ Item {
         color: "#2c313c"
         anchors.fill: parent
     }
+
+
+
+
 
     Rectangle {
         id: schedulesHeader
@@ -66,8 +73,14 @@ Item {
             anchors.topMargin: 15
             clip: true
             spacing: 15
+            model: userSchedulesModel
 
             delegate: Item {
+
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: schedulesList.currentIndex = index
+                }
 
                 height: column.implicitHeight
                 width: parent.width
@@ -80,45 +93,101 @@ Item {
                                                                 : "transparent"
                 }
 
-                Column{
-                    id: column
-                    spacing: 5
-                    padding: 5
-                    Text{
-                        id: name
-                        text: scheduleName
-                        font.pixelSize: 20
-                        color: mySchedulesPage.textColor
 
-                    }
-
-                    Text{
-                        id: listECRN
-                        text: "Courses to be picked: " + ECRN.join(', ')
-                        font.pixelSize: 15
-                        color: mySchedulesPage.textColor
-                        leftPadding: 15
-                    }
-
-                    Text{
-                        id: listSCRN
-                        text: "Courses to be dropped: " + SCRN.join(', ')
-                        font.pixelSize: 15
-                        color: mySchedulesPage.textColor
-                        leftPadding: 15
-                    }
-                }
-
-                MouseArea{
+                RowLayout{
                     anchors.fill: parent
-                    onClicked: schedulesList.currentIndex = index
+
+                    Column{
+                        id: column
+                        Layout.fillWidth: true
+                        width: 100
+                        spacing: 5
+                        padding: 5
+                        Text{
+                            id: name
+                            text: scheduleName
+                            font.pixelSize: 20
+                            wrapMode: Text.WordWrap
+                            color: mySchedulesPage.textColor
+                            width: column.width
+                        }
+
+                        Text{
+                            id: listECRN
+                            text: "Courses to be picked: " + ECRN.join(', ')
+                            font.pixelSize: 15
+                            wrapMode: Text.WordWrap
+                            color: mySchedulesPage.textColor
+                            leftPadding: 15
+                            width: column.width
+                        }
+
+                        Text{
+                            id: listSCRN
+                            text: "Courses to be dropped: " + SCRN.join(', ')
+                            font.pixelSize: 15
+                            wrapMode: Text.WordWrap
+                            color: mySchedulesPage.textColor
+                            leftPadding: 15
+                            width: column.width
+                        }
+                    }
+
+                    Row{
+                        id: scheduleControls
+                        spacing: 5
+                        visible: index === schedulesList.currentIndex
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        Layout.fillHeight: false
+                        padding: 5
+
+                        TopBarButton{
+                            id: selectSchedule
+                            buttonColorClicked: "#00b42b"
+                            buttonIconSource: "../../images/svg_images/check_icon.svg"
+                            radius: 10
+                            width: 50
+                            height: 50
+                            imageHeight: 24
+                            imageWidth: 24
+
+                            onClicked: scheduleEditLoader.source = "../panels/EditSchedulePanel.qml"
+
+                        }
+                        TopBarButton{
+                            id: editSchedule
+                            buttonIconSource: "../../images/svg_images/calendar_add_icon.svg"
+                            radius: 10
+                            width: 50
+                            height: 50
+                            imageHeight: 24
+                            imageWidth: 24
+
+                            onClicked: console.log("edit")
+
+                        }
+                        TopBarButton{
+                            id: deletSchedule
+                            buttonColorClicked: "#ba0000"
+                            buttonIconSource: "../../images/svg_images/close_icon.svg"
+                            radius: 10
+                            width: 50
+                            height: 50
+                            imageHeight: 24
+                            imageWidth: 24
+
+                            onClicked: console.log("delete")
+
+                        }
+                    }
                 }
-
             }
-
-
-            model: userSchedulesModel
         }
+    }
+
+    Loader {
+        id: scheduleEditLoader
+        anchors.fill: parent
     }
 
 }

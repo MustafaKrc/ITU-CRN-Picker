@@ -86,7 +86,6 @@ Flickable {
             minimum: 1.1
         }
 
-
         SettingInputBox {
             id: maxRequestCount
             width: parent.width

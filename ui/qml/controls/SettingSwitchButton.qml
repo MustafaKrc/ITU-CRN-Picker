@@ -43,8 +43,10 @@ Item{
             MouseArea{
                 id: mousearea
                 anchors.fill: parent
-                onClicked: setting.isEnabled = !setting.isEnabled
+                onClicked: {setting.isEnabled = !setting.isEnabled; focus = true;}
                 hoverEnabled: true
+                activeFocusOnTab: true
+                Keys.onSpacePressed: setting.isEnabled = !setting.isEnabled
                 onEntered: buttonSwitch.hovered = true
                 onExited: buttonSwitch.hovered = false
             }

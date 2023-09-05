@@ -12,6 +12,9 @@ Button {
     property color buttonColorDefault: "#1c1d20"
     property color buttonColorMouseOver: "#23262e"
     property color buttonColorClicked: "#00a1f1"
+    property int radius: 0
+    property int imageWidth: 16
+    property int imageHeight: 16
 
     QtObject{
         id: internal
@@ -30,6 +33,7 @@ Button {
         id: backgroundButton
         color: internal.dynamicColor
         anchors.fill: parent
+        radius: buttonTopBar.radius
     }
 
     Image{
@@ -38,8 +42,8 @@ Button {
 
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        height: 16
-        width: 16
+        height: imageHeight
+        width: imageWidth
         fillMode: Image.PreserveAspectFit
 
     }

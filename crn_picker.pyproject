@@ -18,10 +18,10 @@
         "ui/qml/panels/LoginPanel.qml",
         "ui/qml/controls/CustomButton.qml",
         "ui/qml/controls/SettingSwitchButton.qml",
-        "ui/qml/panels/AppPanel.qml",
         "config.ini",
         "schedules.json",
         "core/schedule_list_model.py",
-        "ui/qml/controls/SettingInputBox.qml"
+        "ui/qml/controls/SettingInputBox.qml",
+        "ui/qml/panels/EditSchedulePanel.qml"
     ]
 }

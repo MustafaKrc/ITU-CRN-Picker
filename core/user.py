@@ -93,7 +93,7 @@ class UserSchedules(QObject):
     @Slot(str, str , list, list, result = list)
     def editSchedule(self, currentScheduleName, newName, newECRNList, newSCRNList):
         for schedule in self.schedules:
-            if name == schedule.name:
+            if currentScheduleName == schedule.name:
                 currentSchedule = schedule
         else:
             return [False, "Schedule is not found."]
@@ -108,12 +108,12 @@ class UserSchedules(QObject):
     def deleteSchedule(self, scheduleName):
         index = 0
         for i, schedule in enumerate(self.schedules):
-            if name == schedule.name:
+            if scheduleName == schedule.name:
                 index = i
         else:
             return [False, "Schedule is not found."]
 
-        self.schedules.pop(i)
+        self.schedules.pop(index)
         return [True, "Schedule is successfully removed."]
 
 

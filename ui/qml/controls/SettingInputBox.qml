@@ -71,14 +71,15 @@ Item{
             }
 
             TextInput{
-                width: Math.min(Math.max(10,implicitWidth),150)
+                width: Math.min(Math.max(10,implicitWidth), 150)
                 height: 50
                 id: textInput
                 text: value
                 verticalAlignment: Text.AlignVCenter
+                clip: true
                 selectionColor: inputSelectionColor
-                anchors.horizontalCenter: parent.horizontalCenter
                 selectByMouse: true
+                anchors.horizontalCenter: parent.horizontalCenter
                 color: settingTextColor
                 font.pixelSize: 0.5 * parent.height
 
