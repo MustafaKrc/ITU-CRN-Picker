@@ -248,6 +248,8 @@ Rectangle {
 
                 SettingSwitchButton{
                     id: buttonRememberMe
+                    buttonColorMouseOver: "#1c1d20"
+                    buttonColorDefault: "#36373c"
                     Layout.preferredHeight: 1
                     isEnabled: false
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -258,6 +260,7 @@ Rectangle {
 
                     alignMode: SettingSwitchButton.Align.HorizontalCenter
                     settingText: "Remember Me"
+                    switchButtonMaxSize : 40
 
                 }
 

@@ -21,6 +21,7 @@
         "ui/qml/panels/AppPanel.qml",
         "config.ini",
         "schedules.json",
-        "core/schedule_list_model.py"
+        "core/schedule_list_model.py",
+        "ui/qml/controls/SettingInputBox.qml"
     ]
 }

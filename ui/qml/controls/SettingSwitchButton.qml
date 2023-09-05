@@ -7,17 +7,21 @@ import Qt5Compat.GraphicalEffects
 Item{
     id: setting
     // properties
-    property color buttonColorDefault: "#2c313c"
-    property color buttonColorMouseOver: "#1c1d20"
+    property color buttonColorDefault: "#1c1d20"
+    property color buttonColorMouseOver: "#36373c"
+
+    property real buttonToTextRatio: 1
 
     property bool isEnabled: false
 
     property string settingText: "placeholder text"
     property color settingTextColor: "#ffffff"
 
-    property int switchButtonMaxSize: 40
+    property int switchButtonMaxSize: 100
 
     property int alignMode: SettingSwitchButton.Align.Left
+
+    property int spacing: 5
 
     width: 150
     height: 50
@@ -51,7 +55,7 @@ Item{
             anchors.verticalCenter: parent.verticalCenter
 
 
-            height: Math.min(switchButtonMaxSize, parent.height)
+            height: Math.min(switchButtonMaxSize, parent.height * (buttonToTextRatio < 1 ? buttonToTextRatio : 1))
             width: height * 2
             visible: true
             color: buttonSwitch.hovered ? buttonColorMouseOver : buttonColorDefault
@@ -72,10 +76,10 @@ Item{
             id: textDescription
             text: settingText
             anchors.left: buttonSwitch.right
-            anchors.leftMargin: 5
+            anchors.leftMargin: spacing
 
             width: Math.min(implicitWidth, setting.width - buttonSwitch.width - anchors.leftMargin)
-            height: parent.height
+            height: parent.height / (buttonToTextRatio > 1 ? buttonToTextRatio : 1)
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter

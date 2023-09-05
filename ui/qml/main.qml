@@ -372,16 +372,16 @@ Window {
                         visible: false
                     }
 
-                    SettingsPage{
-                        id: pageSettings
-                        visible: false
-                    }
 
                     MySchedulesPage{
                         id: pageMySchedules
                         visible: false
                     }
 
+                    SettingsPage{
+                        id: pageSettings
+                        visible: false
+                    }
 
                     StackView {
                         id: stackView

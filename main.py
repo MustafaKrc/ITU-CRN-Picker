@@ -20,11 +20,8 @@ if __name__ == "__main__":
     userSchedulesModel = ScheduleListModel()
     engine.rootContext().setContextProperty("userSchedulesModel", userSchedulesModel)
 
-    qmlRegisterType(UserConfig, 'UserConfig', 1, 0, 'UserConfig')
-    qmlRegisterType(ItuLogin, 'ItuLogin', 1, 0, 'ItuLogin')
 
-    #userConfig = UserConfig()
-    #engine.rootContext().setContextProperty("userConfig", userConfig)
+    #qmlRegisterType(ItuLogin, 'ItuLogin', 1, 0, 'ItuLogin')
 
     #engine.rootContext().setContextProperty("ItuLogin", ItuLogin())
 
