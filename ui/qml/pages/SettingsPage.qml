@@ -41,11 +41,9 @@ Flickable {
     contentHeight: settings.implicitHeight + settings.anchors.bottomMargin + settings.anchors.topMargin
 
     ScrollBar.vertical: ScrollBar {
-            parent: parent
-        }
+        parent: parent
+    }
 
-
-    //UserConfig
     
     Column {
         id: settings
@@ -63,7 +61,9 @@ Flickable {
             settingText: "Remember username and password on each login."
             spacing: 25
 
-            isEnabled: UserConfig.getSetting("login","rememberMe").toLowerCase() === "true"
+            value: UserConfig.rememberMe
+            binderFunction: function(parent){UserConfig.rememberMe = !UserConfig.rememberMe;}
+
         }
 
         SettingSwitchButton {
@@ -73,17 +73,22 @@ Flickable {
             settingText: "Automatically log into my account everytime application is run."
             spacing: 25
 
-            isEnabled: UserConfig.getSetting("login","keepMeSignedIn").toLowerCase() === "true"
+            value: UserConfig.keepMeSignedIn
+            binderFunction: function(parent){UserConfig.keepMeSignedIn = !UserConfig.keepMeSignedIn;}
         }
-        
+
         SettingInputBox {
             id: requestInterval
             width: parent.width
             settingText: "Amount of seconds between each post request to server."
             spacing: 25
             inputValidator: SettingInputBox.Validator.Double
-            value: UserConfig.getSetting("request","requestInterval")
             minimum: 1.1
+            inputToDescWidthRatio: 0.35
+            value: UserConfig.requestInterval
+            binderFunction: function(parent){UserConfig.requestInterval = parent.text;}
+
+            //order: SettingInputBox.Order.DescriptionFirst
         }
 
         SettingInputBox {
@@ -92,9 +97,11 @@ Flickable {
             settingText: "Maximum amount of request to make. (Type -1 for unlimited)"
             spacing: 25
             inputValidator: SettingInputBox.Validator.Integer
-            value: UserConfig.getSetting("request","maxRequestCount")
             minimum: 1
             edgeCase: -1
+            inputToDescWidthRatio: 0.35
+            value: UserConfig.maxRequestCount
+            binderFunction: function(parent){UserConfig.maxRequestCount = parent.text;}
         }
 
 

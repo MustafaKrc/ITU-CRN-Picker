@@ -12,16 +12,20 @@ Item{
 
     property real buttonToTextRatio: 1
 
-    property bool isEnabled: false
+    property bool value:false
 
     property string settingText: "placeholder text"
     property color settingTextColor: "#ffffff"
 
     property int switchButtonMaxSize: 100
+    property int maximumTextSize: 60
+    property int minimumTextSize: 12
 
     property int alignMode: SettingSwitchButton.Align.Left
 
     property int spacing: 5
+
+    property var binderFunction : function(parent) {console.log(parent,"=> provide a binder function!")}
 
     width: 150
     height: 50
@@ -43,10 +47,10 @@ Item{
             MouseArea{
                 id: mousearea
                 anchors.fill: parent
-                onClicked: {setting.isEnabled = !setting.isEnabled; focus = true;}
+                onClicked: binderFunction()
                 hoverEnabled: true
                 activeFocusOnTab: true
-                Keys.onSpacePressed: setting.isEnabled = !setting.isEnabled
+                Keys.onSpacePressed: setting.value = !setting.value
                 onEntered: buttonSwitch.hovered = true
                 onExited: buttonSwitch.hovered = false
             }
@@ -77,6 +81,7 @@ Item{
         Text {
             id: textDescription
             text: settingText
+            anchors.verticalCenter: parent.verticalCenter
             anchors.left: buttonSwitch.right
             anchors.leftMargin: spacing
 
@@ -90,9 +95,7 @@ Item{
             color: settingTextColor
             fontSizeMode: Text.Fit
 
-            minimumPixelSize: 10
-            minimumPointSize: 10
-            font.pointSize: 60
+            font.pixelSize: Math.min(Math.max(minimumTextSize, container.height), maximumTextSize)
         }
     }
 
@@ -104,7 +107,7 @@ Item{
     states: [
         State {
             name: "On State"
-            when: setting.isEnabled
+            when: setting.value
 
             PropertyChanges {
                 target: circle

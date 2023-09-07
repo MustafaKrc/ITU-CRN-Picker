@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
-from PySide6.QtCore import QAbstractListModel, Slot, Signal, Qt
+from PySide6.QtCore import QAbstractListModel, Slot, Signal, Qt, QModelIndex
 from .user import UserSchedules
 
 
@@ -33,3 +33,8 @@ class ScheduleListModel(QAbstractListModel):
 
     def roleNames(self):
         return self._roles
+
+    @Slot(int, result=bool)
+    def updateModel(self, index):
+        self.dataChanged.emit(self.index(index), self.index(index))
+        return True

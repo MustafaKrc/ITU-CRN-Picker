@@ -23,9 +23,18 @@ Item{
 
     property int inputValidator: SettingInputBox.Validator.String
 
+    property int order: SettingInputBox.Order.SettingFirst
+
     property real minimum : Number.NEGATIVE_INFINITY
     property real maximum : Number.POSITIVE_INFINITY
     property real edgeCase : Number.POSITIVE_INFINITY
+
+    property real inputToDescWidthRatio: 1
+    property real maximumTextSize: 60
+    property real minimumTextSize : 12
+
+    property var binderFunction : function(parent) {console.log(parent,"=> provide a binder function!")}
+
 
     width: 150
     height: 50
@@ -42,6 +51,11 @@ Item{
         Left
     }
 
+    enum Order{
+        DescriptionFirst,
+        SettingFirst
+    }
+
 
     Item{
         id: container
@@ -51,14 +65,18 @@ Item{
                         alignMode === SettingSwitchButton.Align.Left ? parent.width
                                                                      : buttonSwitch.width
                                                                        + textDescription.paintedWidth
-                                                                       + textDescription.anchors.leftMargin
-                        )
+                                                                       + textDescription.anchors.leftMargin)
 
         Rectangle{
             id: textInputBackground
             height: 50
             width: textInput.width + 10
             radius: 10
+            anchors.verticalCenter: parent.verticalCenter
+
+
+            anchors.left: order === SettingInputBox.Order.DescriptionFirst ? textDescription.right : undefined
+            anchors.leftMargin: order === SettingInputBox.Order.DescriptionFirst ? spacing : 0
 
             property bool hovered: false
 
@@ -71,26 +89,33 @@ Item{
             }
 
             TextInput{
-                width: Math.min(Math.max(10,implicitWidth), 150)
+                width: Math.min(Math.max(10, implicitWidth),
+                                Math.max(setting.width - textDescription.implicitWidth,
+                                         setting.width * (inputToDescWidthRatio < 1 ? inputToDescWidthRatio :
+                                                                                      inputToDescWidthRatio / (inputToDescWidthRatio+1))))
                 height: 50
                 id: textInput
-                text: value
+                //text: value
+                anchors.verticalCenter: parent.verticalCenter
                 verticalAlignment: Text.AlignVCenter
                 clip: true
                 selectionColor: inputSelectionColor
                 selectByMouse: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: settingTextColor
-                font.pixelSize: 0.5 * parent.height
+                font.pixelSize: Math.min(container.height * 0.5, maximumTextSize)
 
                 property string fallbackValue
-                Component.onCompleted: fallbackValue = text // getting rid of property binding
+                Component.onCompleted: {
+                    text = value
+                    fallbackValue = text // getting rid of property binding
+                }
 
                 onEditingFinished: if(!validate(inputValidator,text)){
                                        text = fallbackValue
                                    } else{
                                        fallbackValue = text
-                                       value = text
+                                       binderFunction(textInput)
                                    }
 
                 //https://doc.qt.io/qt-5/qml-qtquick-controls-textfield.html
@@ -136,10 +161,14 @@ Item{
         Text {
             id: textDescription
             text: settingText
-            anchors.left: textInputBackground.right
-            anchors.leftMargin: spacing
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: order === SettingInputBox.Order.SettingFirst ? textInputBackground.right : container.left
+            anchors.leftMargin: order === SettingInputBox.Order.SettingFirst ? spacing : 0
 
-            width: Math.min(implicitWidth, setting.width - textInput.width - anchors.leftMargin)
+            width: Math.min(implicitWidth, setting.width - textInput.width - anchors.leftMargin,
+                            Math.max(setting.width - textInput.implicitWidth,
+                                     setting.width * (inputToDescWidthRatio < 1 ? (1 - inputToDescWidthRatio) :
+                                                                                  1 / (inputToDescWidthRatio+1))))
             height: parent.height
 
             horizontalAlignment: Text.AlignLeft
@@ -149,9 +178,7 @@ Item{
             color: settingTextColor
             fontSizeMode: Text.Fit
 
-            minimumPixelSize: 10
-            minimumPointSize: 10
-            font.pointSize: 60
+            font.pixelSize: Math.min(Math.max(minimumTextSize, container.height), maximumTextSize)
         }
     }
 }

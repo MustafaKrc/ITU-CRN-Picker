@@ -337,7 +337,7 @@ Window {
                     Label {
                         id: label1
                         color: "#ffffff"
-                        text: qsTr("Version ") + UserConfig.getSetting("about","version")
+                        text: qsTr("Version ") + UserConfig.version
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: buttonSettings.bottom

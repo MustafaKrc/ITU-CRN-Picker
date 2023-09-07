@@ -5,7 +5,8 @@ import QtQuick.Controls.Material
 
 import "../controls"
 
-//import ItuLogin 1.0 // qt creator throws QML module not found error, but this is just a visual error
+//import core.ItuLogin 1.0 // qt creator throws QML module not found error, but this is just a visual error
+import core.UserConfig 1.0
 
 Rectangle {
     id: login
@@ -251,7 +252,6 @@ Rectangle {
                     buttonColorMouseOver: "#1c1d20"
                     buttonColorDefault: "#36373c"
                     Layout.preferredHeight: 1
-                    isEnabled: false
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.maximumHeight: 50
                     Layout.minimumHeight: 12
@@ -261,9 +261,11 @@ Rectangle {
                     alignMode: SettingSwitchButton.Align.HorizontalCenter
                     settingText: "Remember Me"
                     switchButtonMaxSize : 40
+                    minimumTextSize: 10
 
+                    value: UserConfig.rememberMe
+                    binderFunction: function(){UserConfig.rememberMe = !UserConfig.rememberMe;}
                 }
-
 
 
                 CustomButton{

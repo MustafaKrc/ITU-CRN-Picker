@@ -4,6 +4,9 @@ import QtQuick.Layouts
 
 import "../controls"
 
+import core.UserSchedules 1.0
+import core.UserConfig 1.0
+
 Item {
     id: mySchedulesPage
 
@@ -19,9 +22,6 @@ Item {
         color: "#2c313c"
         anchors.fill: parent
     }
-
-
-
 
 
     Rectangle {
@@ -151,32 +151,35 @@ Item {
                             imageHeight: 24
                             imageWidth: 24
 
-                            onClicked: scheduleEditLoader.source = "../panels/EditSchedulePanel.qml"
+                            //onClicked:
 
                         }
                         TopBarButton{
                             id: editSchedule
-                            buttonIconSource: "../../images/svg_images/calendar_add_icon.svg"
+                            buttonIconSource: "../../images/svg_images/calendar_edit_icon.svg"
                             radius: 10
                             width: 50
                             height: 50
                             imageHeight: 24
                             imageWidth: 24
 
-                            onClicked: console.log("edit")
+                            onClicked: {
+                                scheduleEditLoader.scheduleIndex = index
+                                scheduleEditLoader.active = true
+                            }
 
                         }
                         TopBarButton{
                             id: deletSchedule
                             buttonColorClicked: "#ba0000"
-                            buttonIconSource: "../../images/svg_images/close_icon.svg"
+                            buttonIconSource: "../../images/svg_images/delete_icon.svg"
                             radius: 10
                             width: 50
                             height: 50
                             imageHeight: 24
                             imageWidth: 24
 
-                            onClicked: console.log("delete")
+                            //onClicked:
 
                         }
                     }
@@ -188,6 +191,23 @@ Item {
     Loader {
         id: scheduleEditLoader
         anchors.fill: parent
+        source: "../panels/EditSchedulePanel.qml"
+        active: false
+        property int scheduleIndex;
+    }
+
+    Connections{
+        target: scheduleEditLoader.item
+
+        function onSaved(){
+            userSchedulesModel.updateModel(schedulesList.currentIndex)
+            scheduleEditLoader.active = false
+        }
+
+        function onCancelled(){
+            scheduleEditLoader.active = false
+        }
+
     }
 
 }
