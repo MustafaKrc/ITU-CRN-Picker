@@ -264,7 +264,7 @@ Rectangle {
                     minimumTextSize: 10
 
                     value: UserConfig.rememberMe
-                    binderFunction: function(){UserConfig.rememberMe = !UserConfig.rememberMe;}
+                    binderFunction: function(parent){UserConfig.rememberMe = !UserConfig.rememberMe;}
                 }
 
 

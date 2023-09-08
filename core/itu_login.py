@@ -5,6 +5,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from PySide6.QtQml import QmlElement
 from PySide6.QtCore import QObject, Slot, Signal
 
+from .user import UserConfig
+
 QML_IMPORT_NAME = "core.ItuLogin"
 QML_IMPORT_MAJOR_VERSION = 1
 QML_IMPORT_MINOR_VERSION = 0
@@ -32,7 +34,8 @@ class ItuLogin(QObject):
         self.__service = ChromeService()
         self.driver = webdriver.Chrome(service=self.__service, chrome_options=options)
 
-    def login(self):
+    @Slot(str, str, result = bool)
+    def login(self, user_name, password):
         """Logs into ITU system.
 
         After logging, calls another method to grab the authorization token from responses."""
@@ -44,8 +47,8 @@ class ItuLogin(QObject):
         user = self.driver.find_element(By.XPATH, user_xpath)
         password = self.driver.find_element(By.XPATH, password_xpath)
 
-        user.send_keys(self.username)
-        password.send_keys(self.password)
+        user.send_keys(user_name)
+        password.send_keys(password)
 
         self.driver.find_element(
             By.XPATH, '//*[@id="ContentPlaceHolder1_btnLogin"]'
@@ -62,15 +65,16 @@ class ItuLogin(QObject):
             if request.response and request.headers.get("authorization"):
                 auth_token = request.headers["authorization"]
                 if len(auth_token) > 32:  # some auth tokens are empty
-                    UserConfig.auth_token = auth_token
+                    UserConfig().auth_token = auth_token
                     break
 
-    def getNewAuthToken(self):
+    @Slot()
+    def refreshAuthToken(self):
         """Gets a new authorization token.
 
         Calls another method to grab the authorization token from responses."""
         if not self.isLoggedIn():
-            self.login()
+            return
 
         # deleting previous request responses to grab the latest responses
         del self.driver.requests

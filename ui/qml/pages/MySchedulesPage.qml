@@ -18,7 +18,7 @@ Item {
 
 
     Rectangle {
-        id: rectangle
+        id: background
         color: "#2c313c"
         anchors.fill: parent
     }
@@ -151,9 +151,9 @@ Item {
                             imageHeight: 24
                             imageWidth: 24
 
-                            //onClicked:
-
+                            onClicked: UserConfig.currentSchedule = scheduleName
                         }
+
                         TopBarButton{
                             id: editSchedule
                             buttonIconSource: "../../images/svg_images/calendar_edit_icon.svg"
@@ -167,8 +167,8 @@ Item {
                                 scheduleEditLoader.scheduleIndex = index
                                 scheduleEditLoader.active = true
                             }
-
                         }
+
                         TopBarButton{
                             id: deletSchedule
                             buttonColorClicked: "#ba0000"

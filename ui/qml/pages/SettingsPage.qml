@@ -5,31 +5,6 @@ import "../controls"
 
 import core.UserConfig 1.0
 
-
-/*
-
-    "login": {
-        "rememberMe": "",
-        "keepMeSignedIn": ""
-    },
-    "request": {
-        "requestInterval": "",
-        "maxRequestCount": "",
-
-
-    },
-    "token" : {
-    },
-    "schedule" : {
-    }
-
-
-
-
-  */
-
-
-
 Flickable {
 
     Rectangle {
@@ -103,59 +78,7 @@ Flickable {
             value: UserConfig.maxRequestCount
             binderFunction: function(parent){UserConfig.maxRequestCount = parent.text;}
         }
-
-
-
-
     }
-
-
-
-    /*
-    ListView {
-        id: listView
-        anchors.fill: parent
-        clip: true
-        spacing: 25
-        anchors.rightMargin: 50
-        anchors.leftMargin: 50
-        anchors.bottomMargin: 50
-        anchors.topMargin: 50
-        
-        Component.onCompleted: console.log(userConfig.getSetting("login","rememberMe"))
-        
-        model: ListModel {
-            ListElement {
-                textSetting: "Remember Me"
-                //value: userConfig.getSetting("login","rememberMe")
-            }
-            
-            ListElement {
-                textSetting: "Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 Setting2 "
-            }
-            
-            ListElement {
-                textSetting: "Setting3"
-            }
-            
-            ListElement {
-                textSetting: "setting4"
-            }
-        }
-        
-        delegate: SettingSwitchButton{
-        
-            buttonColorDefault: "#20242d"
-            //isEnabled: value
-            
-            settingText: textSetting
-            width: listView.width
-            switchButtonMaxSize: 30
-            
-        }
-        
-    }
-*/
 }
 
 

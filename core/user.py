@@ -177,18 +177,25 @@ class UserConfig(QObject):
         self.config = configparser.ConfigParser()
         self.config.read('config.ini')
 
-        # username = getenv("ITUUserName")
-        # password = getenv("ITUPassword")
-
         self.auth_token = None
         self.request_count = 0
-        self.latest_response = dict()
 
-        self._rememberMe = self.config["login"]["rememberMe"].lower() == "true"
-        self._keepMeSignedIn = self.config["login"]["keepMeSignedIn"].lower() == "true"
-        self._requestInterval = self.config["request"]["requestInterval"]
-        self._maxRequestCount = self.config["request"]["maxRequestCount"]
+        # mocking data
+        self.latest_response = {
+            "11111": ["1."],
+            "22222": ["2."],
+            "5455": ["3."],
+            "88888": ["4."],
+            "99999": ["5."],
+        }
+
+        #self.latest_response = dict()
+        self._rememberMe = self.config["login"]["remember_me"].lower() == "true"
+        self._keepMeSignedIn = self.config["login"]["keep_me_signed_in"].lower() == "true"
+        self._requestInterval = self.config["request"]["request_interval"]
+        self._maxRequestCount = self.config["request"]["max_request_count"]
         self._version = self.config["about"]["version"]
+        self._currentSchedule = self.config["schedule"]["current_schedule"]
 
     @Slot(str, str, result=str)
     def getSetting(self, section, setting):
@@ -204,6 +211,40 @@ class UserConfig(QObject):
             return [False, f"An error occurred: {e}"]
 
         return [True, "Settings are successfully saved."]
+
+    # latestResponse qml property
+
+    def getLatestResponse(self):
+        return self.latest_response
+
+    def setLatestResponse(self, value):
+        self.latest_response = value
+        self.latestResponseChanged.emit()
+
+    @Signal
+    def latestResponseChanged(self):
+        pass
+
+    latestResponse = Property(dict, getLatestResponse,
+                          setLatestResponse, notify=latestResponseChanged)
+        
+    # currentSchedule qml property
+    
+    def getCurrentSchedule(self):
+        return self._currentSchedule
+
+    def setCurrentSchedule(self, value):
+        self._currentSchedule = value
+        self.config["schedule"]["current_schedule"] = str(value)
+        self.currentScheduleChanged.emit()
+        self.saveConfig()
+
+    @Signal
+    def currentScheduleChanged(self):
+        pass
+
+    currentSchedule = Property(str, getCurrentSchedule,
+                          setCurrentSchedule, notify=currentScheduleChanged)
     
     # version qml property
 
@@ -220,7 +261,7 @@ class UserConfig(QObject):
 
     def setRememberMe(self, value):
         self._rememberMe = value
-        self.config["login"]["rememberMe"] = str(value)
+        self.config["login"]["remember_me"] = str(value)
         self.rememberMeChanged.emit()
         self.saveConfig()
 
@@ -238,7 +279,7 @@ class UserConfig(QObject):
 
     def setKeepMeSignedIn(self, value):
         self._keepMeSignedIn = value
-        self.config["login"]["keepMeSignedIn"] = str(value)
+        self.config["login"]["keep_me_signed_in"] = str(value)
         self.keepMeSignedInChanged.emit()
         self.saveConfig()
 
@@ -255,7 +296,7 @@ class UserConfig(QObject):
 
     def setRequestInterval(self, value):
         self._requestInterval = value
-        self.config["request"]["requestInterval"] = value
+        self.config["request"]["request_interval"] = value
         self.requestIntervalChanged.emit()
         self.saveConfig()
 
@@ -272,7 +313,7 @@ class UserConfig(QObject):
 
     def setMaxRequestCount(self, value):
         self._maxRequestCount = value
-        self.config["request"]["maxRequestCount"] = value
+        self.config["request"]["max_request_count"] = value
         self.saveConfig()
         
     @Signal

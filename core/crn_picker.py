@@ -1,9 +1,15 @@
 import requests
 from json import loads
-from .user import UserConfig
+from .user import UserConfig, UserSchedules
+from PySide6.QtQml import QmlElement
+from PySide6.QtCore import QObject, Slot, Signal, Property
 
+QML_IMPORT_NAME = "core.CrnPicker"
+QML_IMPORT_MAJOR_VERSION = 1
+QML_IMPORT_MINOR_VERSION = 0
 
-class CrnPicker:
+@QmlElement
+class CrnPicker(QObject):
     """Handles the post requests and responses
 
     Grabs these informations from UserConfig:
@@ -42,25 +48,41 @@ class CrnPicker:
         },
     }
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
         self.payload = {
-            "ECRN": UserConfig.ECRN,
-            "SCRN": UserConfig.SCRN,
+            "ECRN": [],
+            "SCRN": [],
         }
         self.headers = {
             "authority": "kepler-beta.itu.edu.tr",
             "method": "POST",
             "path": "/api/ders-kayit/v21",
             "scheme": "https",
-            "authorization": UserConfig.auth_token,
+            "authorization": UserConfig().auth_token,
         }
+
+    @Slot()
+    def startRequests(self):
+        config = UserConfig()
+        del config.latest_response
+        config.request_count = 0
+
+        schedules = UserSchedules()
+        current_schedule_name = config.getCurrentSchedule()
+        current_schedule_index = schedules.getIndex(current_schedule_name)
+
+        self.payload["ECRN"] = schedules.getECRNList(current_schedule_index)
+        self.payload["SCRN"] = schedules.getSCRNList(current_schedule_index)
+
 
     def sendRequest(self):
         """Sends request ford CRN picking/dropping.
 
         Grabs the latest auth token before sending the request.
 
-        Calls another method to identfy the response."""
+        Returns the response."""
         self.updateAuthToken()
         response = requests.post(
             "https://kepler-beta.itu.edu.tr/api/ders-kayit/v21",
@@ -72,9 +94,10 @@ class CrnPicker:
 
     def updateAuthToken(self):
         """Grabs the latest authorization token from the UserConfig"""
-        self.headers["authorization"] = UserConfig.auth_token
+        self.headers["authorization"] = UserConfig().auth_token
 
-    def identifyResponse(self, response) -> list[str]:
+    @Slot()
+    def identifyResponse(self, response):
         """Identifies the response.
 
         If CRN operation was unsuccessfull:
@@ -83,38 +106,35 @@ class CrnPicker:
         If CRN operation was successfull:
         - Updates the UserConfig.latest_response as successfull.
         - Removes the CRN from the ECRN or SCRN list. (from the one that it belongs)"""
-        json = loads(response.content)
+        response_content = loads(response.content)
 
-        for element in json["ecrnResultList"]:
-            UserConfig.latest_response.update(
+        for element in response_content["ecrnResultList"]:
+            UserConfig().latest_response.update(
                 {
                     element["crn"]: {
                         "type": "ECRN",
                         "statusCode": str(element["statusCode"]),
-                        "message": f'The course with CRN { element["crn"]} has been successfully added.'
-                        if str(element["statusCode"]) == "0"
-                        else self.return_values["label"][element["resultCode"]].format(
-                            element["crn"]
-                        ),
+                        "message": f'The course with CRN { element["crn"]} has been successfully added.' if str(element["statusCode"]) == "0"
+                                    else self.return_values["label"][element["resultCode"]].format(element["crn"]),
                     }
                 }
             )
             if str(element["statusCode"]) == "0":
-                UserConfig.ECRN.remove(element["crn"])
+                self.payload["ECRN"].remove(element["crn"])
 
-        for element in json["scrnResultList"]:
-            UserConfig.latest_response.update(
+        for element in response_content["scrnResultList"]:
+            UserConfig().latest_response.update(
                 {
                     element["crn"]: {
                         "type": "SCRN",
                         "statusCode": str(element["statusCode"]),
-                        "message": f'The course with CRN { element["crn"]} has been successfully dropped.'
-                        if str(element["statusCode"]) == "0"
-                        else self.return_values["label"][element["resultCode"]].format(
-                            element["crn"]
-                        ),
+                        "message": f'The course with CRN { element["crn"]} has been successfully dropped.' if str(element["statusCode"]) == "0"
+                        else self.return_values["label"][element["resultCode"]].format(element["crn"]),
                     }
                 }
             )
             if str(element["statusCode"]) == "0":
-                UserConfig.SCRN.remove(element["crn"])
+                self.payload["SCRN"].remove(element["crn"])
+
+        UserConfig.latestResponseChanged.emit()
+

@@ -61,9 +61,10 @@ Item {
                     inputSelectionColor: inputSelectionColor
                     Layout.preferredHeight: 75
                     Layout.fillWidth: true
+                    maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
                     value: UserSchedules.getName(scheduleIndex)
-                    maximumTextSize: 40
+                    binderFunction: function(){}
                 }
 
                 SettingInputBox{
@@ -77,9 +78,10 @@ Item {
                     inputToDescWidthRatio: 1.5
                     Layout.preferredHeight: 75
                     Layout.fillWidth: true
+                    maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
                     value: UserSchedules.getECRNList(scheduleIndex).toString()
-                    maximumTextSize: 40
+                    binderFunction: function(){}
                 }
 
                 SettingInputBox{
@@ -93,9 +95,10 @@ Item {
                     inputToDescWidthRatio: 1.5
                     Layout.preferredHeight: 75
                     Layout.fillWidth: true
+                    maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
                     value: UserSchedules.getSCRNList(scheduleIndex).toString()
-                    maximumTextSize: 40
+                    binderFunction: function(){}
                 }
 
 
