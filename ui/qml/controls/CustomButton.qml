@@ -11,6 +11,8 @@ Button {
     property color colorMouseOver: "#55AAFF"
     property color colorPressed: "#3F7EBD"
 
+    property real minimumTextSize: 12
+
     QtObject{
         id: internal
 
@@ -22,16 +24,20 @@ Button {
     }
 
     text: qsTr("Button")
-    contentItem: Item{
-        Text {
-            id: name
-            text: button.text
-            //font: button.font
-            color: "#ffffff"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: button.height / 3
-        }
+    contentItem: Text {
+        id: name
+        text: button.text
+        //font: button.font
+        color: "#ffffff"
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        fontSizeMode: Text.Fit
+        elide: Text.ElideRight
+        wrapMode: Text.WordWrap
+
+        font.pixelSize: Math.max(height/2, minimumTextSize)
+
+        //wrapMode: Text.WordWrap
     }
 
     background: Rectangle{

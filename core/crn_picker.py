@@ -63,11 +63,35 @@ class CrnPicker(QObject):
             "authorization": UserConfig().auth_token,
         }
 
+        self._is_working = False
+
+
+    # latestResponse qml property
+
+    def getIsWorking(self):
+        return self._is_working
+
+    def setIsWorking(self, value):
+        self._is_working = value
+        self.isWorkingChanged.emit()
+
+    @Signal
+    def isWorkingChanged(self):
+        pass
+
+    isWorking = Property(bool, getIsWorking,
+                          setIsWorking, notify=isWorkingChanged)
+
     @Slot()
     def startRequests(self):
         config = UserConfig()
-        del config.latest_response
+
+        #del config.latest_response
+        config.latest_response.clear()
+        config.latestResponseChanged.emit()
+
         config.request_count = 0
+        # emit request cound changed
 
         schedules = UserSchedules()
         current_schedule_name = config.getCurrentSchedule()

@@ -1,8 +1,9 @@
-from datetime import datetime
 import configparser
 import json
+from dotenv import load_dotenv
+from os.path import join, dirname
+from os import getenv
 from dataclasses import dataclass
-
 
 from PySide6.QtQml import QmlElement, QmlSingleton
 from PySide6.QtCore import QObject, Slot, Signal, Property
@@ -174,8 +175,25 @@ class UserConfig(QObject):
 
         super().__init__(parent)
 
-        self.config = configparser.ConfigParser()
-        self.config.read('config.ini')
+        try: 
+            self.config = configparser.ConfigParser()
+            self.config.read('config.ini')
+        except Exception as e:
+            print(f"An error occured: {e}")
+
+        
+        try:
+            dotenv_path = join(dirname(dirname(__file__)), ".env")
+            load_dotenv(dotenv_path)
+        except Exception as e:
+            print(f"An error occured: {e}")
+
+        self._username = getenv("ITUusername")
+        self._password = getenv("ITUpassword")
+
+        self._username = self._username if self._username != "" else None
+        self._password = self._password if self._password != "" else None
+        
 
         self.auth_token = None
         self.request_count = 0
@@ -190,6 +208,7 @@ class UserConfig(QObject):
         }
 
         #self.latest_response = dict()
+
         self._rememberMe = self.config["login"]["remember_me"].lower() == "true"
         self._keepMeSignedIn = self.config["login"]["keep_me_signed_in"].lower() == "true"
         self._requestInterval = self.config["request"]["request_interval"]
@@ -211,6 +230,38 @@ class UserConfig(QObject):
             return [False, f"An error occurred: {e}"]
 
         return [True, "Settings are successfully saved."]
+    
+    # username qml property
+
+    def getUsername(self):
+        return self._username
+
+    def setUsername(self, value):
+        self._username = value
+        self.usernameChanged.emit()
+
+    @Signal
+    def usernameChanged(self):
+        pass
+
+    username = Property(str, getUsername,
+                          setUsername, notify=usernameChanged)
+
+    # password qml property
+
+    def getPassword(self):
+        return self._password
+
+    def setPassword(self, value):
+        self._password = value
+        self.passwordChanged.emit()
+
+    @Signal
+    def passwordChanged(self):
+        pass
+
+    password = Property(str, getPassword,
+                          setPassword, notify=passwordChanged)
 
     # latestResponse qml property
 

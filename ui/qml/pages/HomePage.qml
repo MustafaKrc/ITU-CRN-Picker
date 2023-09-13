@@ -3,11 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 
-//import "../../../core/ItuLogin" 1.0
-//import core.ItuLogin 1.0
 import "../panels"
 import "../controls"
 
+//import core.ItuLogin 1.0
 import core.UserConfig 1.0
 import core.UserSchedules 1.0
 import core.CrnPicker 1.0
@@ -103,13 +102,17 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 15
                 rowSpacing: 10
-                columns: 4
-                rows: 4
+                columns: 10
+                rows: 10
 
-                Column{
+                ColumnLayout{
+                    id: information
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 5
+                    Layout.preferredHeight: 1
 
-                    Layout.rowSpan: 3
-                    Layout.columnSpan: 3
+                    Layout.rowSpan: 5
+                    Layout.columnSpan: 6
                     Layout.row: 0
                     Layout.column: 0
                     Layout.fillWidth: true
@@ -126,29 +129,7 @@ Item {
 
                         wrapMode: Text.WordWrap
                         //fontSizeMode: Text.Fit
-                        font.pixelSize: 25
-                    }
-
-                    Text {
-                        id: scheduleECRN
-                        text: "CRNs to be picked: " + schedule.currentScheduleECRN
-                        color: textColor
-                        width: parent.width
-
-                        wrapMode: Text.WordWrap
-                        //fontSizeMode: Text.Fit
-                        font.pixelSize: 25
-                    }
-
-                    Text {
-                        id: scheduleSCRN
-                        text: "CRNs to be dropped: " + schedule.currentScheduleSCRN
-                        color: textColor
-                        width: parent.width
-
-                        wrapMode: Text.WordWrap
-                        //fontSizeMode: Text.Fit
-                        font.pixelSize: 25
+                        font.pixelSize: 35
                     }
                 }
 
@@ -156,23 +137,20 @@ Item {
                 Rectangle{
                     id: crnStatusBackground
                     Layout.alignment: Qt.AlignRight
-                    color: backgroundColor
-                    Layout.rowSpan: 2
-                    Layout.columnSpan: 2
-                    Layout.row:0
-                    Layout.column: 3
-                    Layout.minimumHeight: 50
-                    Layout.minimumWidth: 25
+                    color: "transparent" //backgroundColor
+                    Layout.rowSpan: 6
+                    Layout.columnSpan: 6
+                    Layout.row:5
+                    Layout.column: 0
 
-                    Layout.preferredHeight: column.implicitHeight + column.anchors.margins * 2
-                    Layout.preferredWidth: column.implicitWidth + column.anchors.margins * 2
-
-                    //Layout.maximumHeight: 200
-                    //Layout.maximumWidth: 100
-
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
                     radius: 15
+                    Layout.preferredWidth: 5
+                    Layout.preferredHeight: 1
+                    clip: true
 
-                    ColumnLayout{
+                    Column{
                         id: column
                         anchors.fill: parent
                         anchors.margins: 15
@@ -181,74 +159,124 @@ Item {
                         Text{
                             text: "CRNs to be picked:"
                             color: textColor
-                            font.pixelSize: 20
-                            Layout.fillWidth: true
+                            font.pixelSize: 25
                         }
 
                         ListView{
                             model: schedule.currentScheduleECRN
                             height: contentHeight
-                            Layout.fillWidth: true
+                            width: column.width
 
                             delegate: Text{
                                 text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]
-                                                                                              : "Post request is not made")
+                                                                                               : "Post request is not sent")
                                 color: textColor
-                                font.pixelSize: 15
+                                font.pixelSize: 20
                             }
                         }
 
                         Text{
                             text: "CRNs to be dropped:"
                             color: textColor
-                            font.pixelSize: 20
-                            Layout.fillWidth: true
+                            font.pixelSize: 25
                         }
 
                         ListView{
                             model: schedule.currentScheduleSCRN
                             height: contentHeight
-                            width: implicitWidth
-                            Layout.fillWidth: true
+                            width: column.width
 
                             delegate: Text{
                                 text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]
-                                                                                              : "Post request is not made")
+                                                                                               : "Post request is not sent")
                                 color: textColor
-                                font.pixelSize: 15
+                                font.pixelSize: 20
                             }
                         }
                     }
                 }
 
-                CustomButton{
-                    Layout.alignment: Qt.AlignRight | Qt.AlignBottom
-                    Layout.preferredHeight: 75
-                    Layout.preferredWidth: 150
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 1
-                    Layout.row: 3
-                    Layout.column: 2
+                Rectangle{
+                    id: statisticsBackground
+                    Layout.alignment: Qt.AlignRight
+                    color: backgroundColor
+                    Layout.rowSpan: 9
+                    Layout.columnSpan: 4
+                    Layout.row:0
+                    Layout.column: 7
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    radius: 15
+                    Layout.preferredWidth: 1
+                    Layout.preferredHeight: 18
+
+                    clip: true
+
+                    ListView{
+                        id: statistics
+                        anchors.fill: parent
+                        anchors.margins: 5
+                        spacing: 15
+
+                        delegate: Text {
+                            text: statistic + ": " + prefix + value + postfix
+                            color: textColor
+                            font.pixelSize: 25
+                        }
+
+                        model: ListModel{
+                            ListElement {
+                                statistic: "Post Request Made"
+                                value: 555
+                                prefix: ""
+                                postfix: ""
+                            }
+                            ListElement {
+                                statistic: "Success Rate"
+                                value: 87
+                                prefix: "%"
+                                postfix: ""
+                            }
+                            ListElement {
+                                statistic: "Running Since"
+                                value: 55
+                                prefix: ""
+                                postfix: " minutes"
+                            }
+
+                        }
+                    }
                 }
 
                 CustomButton{
+                    //Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    //Layout.maximumHeight: 75
+                    //Layout.maximumWidth: 300
+
+                    Layout.rowSpan: 2
+                    Layout.columnSpan: 2
+                    Layout.row: 9
+                    Layout.column: 9
+
+                    Component.onCompleted: console.log(crnPicker.isWorking)
+
+                    text: crnPicker.isWorking ? "Stop Post Requests" : "Start Post Requests"
+                    highlighted: false
+                    flat: false
                     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
-                    Layout.preferredHeight: 75
-                    Layout.preferredWidth: 150
+                    Layout.preferredHeight: 1
+                    Layout.preferredWidth: 1
+                    //colorDefault:
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 1
-                    Layout.row: 3
-                    Layout.column: 3
+                    onClicked: crnPicker.startRequests()
                 }
-
-
             }
-
-
         }
-
     }
 
 

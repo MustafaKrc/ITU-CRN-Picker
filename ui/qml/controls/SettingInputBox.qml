@@ -118,9 +118,6 @@ Item{
                                        binderFunction(textInput)
                                    }
 
-                //https://doc.qt.io/qt-5/qml-qtquick-controls-textfield.html
-                //inputMethodHints: Qt.ImhFormattedNumbersOnly // have no effect
-
                 /*
                 // for some reason validator property does not work...
                 validator: if(inputValidator === SettingInputBox.Validator.Integer){

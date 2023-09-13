@@ -1,6 +1,7 @@
-from seleniumwire import webdriver
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options
 
 from PySide6.QtQml import QmlElement
 from PySide6.QtCore import QObject, Slot, Signal
@@ -24,17 +25,15 @@ class ItuLogin(QObject):
     def __init__(self, parent = None):
         QObject.__init__(self, parent)
 
-        self.username = ""
-        self.password = ""
 
-        options = webdriver.ChromeOptions()
+        options = Options()
         options.add_argument("headless")  # makes chrome invisible
         options.add_argument("--log-level=3")  # hides chrome error messages.
 
         self.__service = ChromeService()
-        self.driver = webdriver.Chrome(service=self.__service, chrome_options=options)
+        self.driver = webdriver.Chrome(service=self.__service, options=options)
 
-    @Slot(str, str, result = bool)
+    @Slot(str, str, result = list)
     def login(self, user_name, password):
         """Logs into ITU system.
 
@@ -44,29 +43,31 @@ class ItuLogin(QObject):
 
         user_xpath = '//*[@id="ContentPlaceHolder1_tbUserName"]'
         password_xpath = '//*[@id="ContentPlaceHolder1_tbPassword"]'
-        user = self.driver.find_element(By.XPATH, user_xpath)
-        password = self.driver.find_element(By.XPATH, password_xpath)
+        user_name_input = self.driver.find_element(By.XPATH, user_xpath)
+        password_input = self.driver.find_element(By.XPATH, password_xpath)
 
-        user.send_keys(user_name)
-        password.send_keys(password)
+        user_name_input.send_keys(user_name)
+        password_input.send_keys(password)
 
-        self.driver.find_element(
-            By.XPATH, '//*[@id="ContentPlaceHolder1_btnLogin"]'
-        ).click()
-        self.setAuthToken(self.driver.requests)
+        self.driver.find_element(By.XPATH, '//*[@id="ContentPlaceHolder1_btnLogin"]').click()
 
-    def setAuthToken(
-        self, driver_requests
-    ):  # driver_requests: list[webdriver.Chrome.requests]
+        if(self.isLoggedIn()):
+            self.setAuthToken()
+            return [True, "Successfully logged in!"]
+        
+        return [False, "Wrong username or password!"]
+            
+
+    def setAuthToken(self):
         """Grabs the authorization token from the given requests
 
         Also sets the authorization token in UserConfig"""
-        for request in driver_requests:
-            if request.response and request.headers.get("authorization"):
-                auth_token = request.headers["authorization"]
-                if len(auth_token) > 32:  # some auth tokens are empty
-                    UserConfig().auth_token = auth_token
-                    break
+        self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci/auth/jwt")
+
+        element = self.driver.find_element(By.TAG_NAME, "body")
+        token = "Bearer " + element.text
+
+        UserConfig().auth_token = token
 
     @Slot()
     def refreshAuthToken(self):
@@ -76,11 +77,8 @@ class ItuLogin(QObject):
         if not self.isLoggedIn():
             return
 
-        # deleting previous request responses to grab the latest responses
-        del self.driver.requests
-
         self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci")
-        self.setAuthToken(self.driver.requests)
+        self.setAuthToken()
 
     @Slot(result = bool)
     def isLoggedIn(self):
