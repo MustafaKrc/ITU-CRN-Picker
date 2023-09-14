@@ -33,6 +33,11 @@ class ItuLogin(QObject):
         self.__service = ChromeService()
         self.driver = webdriver.Chrome(service=self.__service, options=options)
 
+    
+    @Slot()
+    def close(self):
+        self.driver.quit()
+
     @Slot(str, str, result = list)
     def login(self, user_name, password):
         """Logs into ITU system.
@@ -56,6 +61,17 @@ class ItuLogin(QObject):
             return [True, "Successfully logged in!"]
         
         return [False, "Wrong username or password!"]
+    
+    @Slot(result = list)
+    def logout(self):
+        
+        self.driver.get("https://girisv3.itu.edu.tr/Logout.aspx")
+        
+        if not self.isLoggedIn():
+            UserConfig().auth_token = None
+            return [True, "Successfully logged out!"]
+        
+        return [False, "Could not log out!"]
             
 
     def setAuthToken(self):

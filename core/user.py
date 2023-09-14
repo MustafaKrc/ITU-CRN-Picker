@@ -19,7 +19,6 @@ class Schedule:
 
     @staticmethod
     def isValidCRNList(crnList):
-
         for crn in crnList:
             if not crn.isdigit():  # isdigit will reject negative numbers
                 return False
@@ -93,17 +92,30 @@ class UserSchedules(QObject):
     @Slot(str, list, list, result=list)
     def addSchedule(self, name, ECRNList, SCRNList):
 
+        if name == "":
+            return [False, "Schedule must have a name"]
+
         for schedule in self.schedules:
             if name == schedule.name:
-                return [False, "There exists another schedule with the same name."]
+                return [False, "There exists another schedule with the same name"]
+            
+        if not Schedule.isValidCRNList(ECRNList):
+            return [False, "There is an error with picked CRN list"]
+
+        if not Schedule.isValidCRNList(SCRNList):
+            return [False, "There is an error with dropped CRN list"]
 
         self.schedules.append(Schedule(name, ECRNList, SCRNList))
-        return [True, "Schedule is successfully added."]
+        self.saveSchedules()
+        return [True, "Schedule is successfully added"]
 
     @Slot(int, str, list, list, result=list)
     def editSchedule(self, scheduleIndex, newName, newECRNList, newSCRNList):
 
         currentSchedule = self.schedules[scheduleIndex]
+
+        if newName == "":
+            return [False, "Schedule must have a name"]
 
         for index, schedule in enumerate(self.schedules):
             if schedule.name == newName and index != scheduleIndex:

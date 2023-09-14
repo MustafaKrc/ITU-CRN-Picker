@@ -7,6 +7,8 @@ import core.UserConfig 1.0
 
 Flickable {
 
+    property var notifier: undefined
+
     Rectangle {
         id: background
         color: "#2c313c"

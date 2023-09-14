@@ -15,7 +15,7 @@ Canvas {
 
     property real centerWidth: width / 2
     property real centerHeight: height / 2
-    property real radius: Math.min(canvas.width, canvas.height) / 2 - 10 // -10 is to get rid of clipping
+    property real radius: Math.max(1,(Math.min(canvas.width, canvas.height) / 2) - 10) // -10 is to get rid of clipping
 
     property real minimumValue: 0
     property real maximumValue: 100

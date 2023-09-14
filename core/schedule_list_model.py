@@ -34,7 +34,7 @@ class ScheduleListModel(QAbstractListModel):
     def roleNames(self):
         return self._roles
 
-    @Slot(int, result=bool)
-    def updateModel(self, index):
-        self.dataChanged.emit(self.index(index), self.index(index))
+    @Slot(result=bool)
+    def updateModel(self):
+        self.layoutChanged.emit() #updates whole list rather than changed element
         return True

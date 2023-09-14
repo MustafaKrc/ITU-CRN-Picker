@@ -24,6 +24,8 @@
         "ui/qml/controls/SettingInputBox.qml",
         "ui/qml/panels/EditSchedulePanel.qml",
         "ui/qml/controls/CircularProgressBar.qml",
-        "ui/qml/controls/Notification.qml"
+        "ui/qml/controls/Notification.qml",
+        "ui/qml/panels/CreateSchedulePanel.qml",
+        "ui/qml/Utils.js"
     ]
 }

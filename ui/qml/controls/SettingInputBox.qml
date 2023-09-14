@@ -115,6 +115,7 @@ Item{
                                        text = fallbackValue
                                    } else{
                                        fallbackValue = text
+                                       value = text
                                        binderFunction(textInput)
                                    }
 

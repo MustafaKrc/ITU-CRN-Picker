@@ -10,7 +10,7 @@
             99999
         ]
     },
-    "schedule 2": {
+    "schedule 2 edited": {
         "ECRN": [
             33333,
             44444
@@ -24,6 +24,16 @@
         "ECRN": [
             55555
         ],
-        "SCRN": []
+        "SCRN": [
+            13
+        ]
+    },
+    "schedule 4": {
+        "ECRN": [
+            1
+        ],
+        "SCRN": [
+            1
+        ]
     }
 }

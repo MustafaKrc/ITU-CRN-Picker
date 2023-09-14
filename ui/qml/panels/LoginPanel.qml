@@ -5,9 +5,12 @@ import QtQuick.Controls.Material
 
 
 import "../controls"
+import "../Utils.js" as Utils
 
 import core.ItuLogin 1.0
 import core.UserConfig 1.0
+
+import ".."
 
 Rectangle {
     id: login
@@ -28,6 +31,7 @@ Rectangle {
     property var notifier: undefined
 
 
+
     enum CompactMode{
         BigTopRight,
         SmallTopRight
@@ -35,6 +39,14 @@ Rectangle {
 
     ItuLogin{
         id: ituLogin
+
+        Component.onCompleted: {var a = 0;} // this makes sure onDestruction gets called.
+                                            // if app gets closed wtihout doing anything, onDestruction wouldnt emit..
+
+        Component.onDestruction: {
+            ituLogin.close()
+        }
+
     }
 
 
@@ -43,7 +55,26 @@ Rectangle {
         anchors.fill: parent
         visible: false
         opacity: 0
-        onClicked: isLoggedIn = false // will open a box to confirm logout or show user info too
+        onClicked: {
+
+            /*
+              will open a panel to show user info etc..
+
+              */
+
+            var result = ituLogin.logout()
+            var returnCode = result[0]
+            var returnMessage = result[1]
+
+            if(returnCode){
+                isLoggedIn = false
+                Utils.notify(notifier, returnMessage,"../../images/svg_images/check_icon.svg", "dark green")
+            } else{
+                isLoggedIn = true
+                Utils.notify(notifier, returnMessage,"../../images/svg_images/close_icon.svg", "dark red")
+            }
+
+        }
         // add hover cursor change
     }
 
@@ -311,10 +342,10 @@ Rectangle {
 
             if(returnCode){
                 isLoggedIn = true
-                notifier.open(returnMessage,"../../images/svg_images/check_icon.svg", "dark green")
+                Utils.notify(notifier, returnMessage,"../../images/svg_images/check_icon.svg", "dark green")
             } else{
                 isLoggedIn = false
-                notifier.open(returnMessage,"../../images/svg_images/close_icon.svg", "dark red")
+                Utils.notify(notifier, returnMessage,"../../images/svg_images/close_icon.svg", "dark red")
             }
 
             busyPopup.close()

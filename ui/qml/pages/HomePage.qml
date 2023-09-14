@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQml
 
 import "../panels"
 import "../controls"
@@ -16,6 +15,8 @@ Item {
     property color secondaryColor: "#1f222a"
     property color textColor: "#ffffff"
 
+    property var notifier: undefined
+
 
     Rectangle {
         id: background
@@ -28,11 +29,7 @@ Item {
         id: crnPicker
     }
 
-    Notification{
-        id: notifier
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-    }
+
 
     LoginPanel{
         id: loginPanel
@@ -48,7 +45,8 @@ Item {
         compactModeSmallWidth: 75
         compactModeSmallHeight: 75
 
-        notifier: notifier
+        notifier: parent.notifier
+
         //compactMode: LoginPanel.CompactMode.SmallTopRight
     }
 

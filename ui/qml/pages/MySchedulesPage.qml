@@ -15,6 +15,7 @@ Item {
     property color secondaryColor: "#1f222a"
 
     property int currentScheduleIndex: 0
+    property var notifier: undefined
 
 
     Rectangle {
@@ -83,7 +84,7 @@ Item {
                 }
 
                 height: column.implicitHeight
-                width: parent.width
+                width: schedulesList.width
 
                 Rectangle{
                     anchors.fill: parent
@@ -179,13 +180,39 @@ Item {
                             imageHeight: 24
                             imageWidth: 24
 
-                            //onClicked:
-
+                            onClicked:{
+                                UserSchedules.deleteSchedule(index)
+                                userSchedulesModel.updateModel()
+                            }
                         }
                     }
                 }
             }
         }
+
+        CustomButton {
+            id: customButton
+            text: "Create a Schedule"
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 5
+
+            width: Math.min(150, parent.width/5)
+            height: Math.min(100, parent.height/5)
+
+            onClicked: {
+                scheduleCreateLoader.active = true
+            }
+
+        }
+    }
+
+    Loader {
+        id: scheduleCreateLoader
+        anchors.fill: parent
+        source: "../panels/CreateSchedulePanel.qml"
+        active: false
     }
 
     Loader {
@@ -200,12 +227,26 @@ Item {
         target: scheduleEditLoader.item
 
         function onSaved(){
-            userSchedulesModel.updateModel(schedulesList.currentIndex)
+            userSchedulesModel.updateModel()
             scheduleEditLoader.active = false
         }
 
         function onCancelled(){
             scheduleEditLoader.active = false
+        }
+
+    }
+
+    Connections{
+        target: scheduleCreateLoader.item
+
+        function onSaved(){
+            userSchedulesModel.updateModel()
+            scheduleCreateLoader.active = false
+        }
+
+        function onCancelled(){
+            scheduleCreateLoader.active = false
         }
 
     }

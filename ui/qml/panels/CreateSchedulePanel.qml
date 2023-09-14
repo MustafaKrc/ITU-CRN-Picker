@@ -21,8 +21,6 @@ Item {
     property color inputSelectionColor: "#64769e"
 
 
-    //property int scheduleIndex // schedule index is provided by the loader
-
     Rectangle {
         id: shadow
         color: shadowColor
@@ -65,7 +63,7 @@ Item {
                     Layout.fillWidth: true
                     maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
-                    value: UserSchedules.getName(scheduleIndex)
+                    value: ""
                     binderFunction: function(){}
                 }
 
@@ -82,7 +80,7 @@ Item {
                     Layout.fillWidth: true
                     maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
-                    value: UserSchedules.getECRNList(scheduleIndex).toString()
+                    value: ""
                     binderFunction: function(){}
                 }
 
@@ -99,7 +97,7 @@ Item {
                     Layout.fillWidth: true
                     maximumTextSize: 40
                     order: SettingInputBox.Order.DescriptionFirst
-                    value: UserSchedules.getSCRNList(scheduleIndex).toString()
+                    value: ""
                     binderFunction: function(){}
                 }
 
@@ -126,9 +124,9 @@ Item {
                         Layout.fillHeight: false
 
                         onClicked:{
-                            var result = UserSchedules.editSchedule(scheduleIndex,nameSetting.value.trim(),
-                                                                    ecrnSetting.value.split(",").filter(o=>o).map(item=>item.trim()),
-                                                                    scrnSetting.value.split(",").filter(o=>o).map(item=>item.trim()))
+                            var result = UserSchedules.addSchedule(nameSetting.value.trim(),
+                                                                   ecrnSetting.value.split(",").filter(o=>o).map(item=>item.trim()),
+                                                                   scrnSetting.value.split(",").filter(o=>o).map(item=>item.trim()))
                             var returnCode = result[0]
                             var returnMessage = result[1]
 
@@ -137,7 +135,6 @@ Item {
                             } else {
                                 Utils.notify(notifier, returnMessage,"../../images/svg_images/close_icon.svg", "dark red")
                             }
-
 
                             root.saved()
                         }
