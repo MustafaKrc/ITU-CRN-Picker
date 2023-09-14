@@ -360,10 +360,48 @@ Window {
                     anchors.topMargin: 0
 
 
-                    HomePage{
-                        id: pageHome
-                        visible: false
+
+                    BusyIndicator {
+                        id: busyIndicator
+                        anchors.centerIn: parent
+                        running: true
+                        visible: loader.status === Loader.Loading
+                        background: Rectangle {
+                            color: "#cd111219"
+                        }
                     }
+
+                    Loader {
+                        id: loader
+                        sourceComponent: {
+                            if (busyIndicator.running) {
+                                return //Qt.createComponent("BusyPlaceholder.qml"); // Create a placeholder component
+                            } else {
+                                return homePageComponent; // Load the HomePage component
+                            }
+                        }
+
+                        onLoaded: {
+                            if (!busyIndicator.running) {
+                                item.visible = true; // Show the loaded component
+                                busyIndicator.visible = false; // Hide the busy indicator
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: homePageComponent
+                        HomePage{
+                            id: pageHome
+                            //visible: false
+                        }
+                    }
+
+
+
+
+
+
 
 
                     MySchedulesPage{
@@ -381,8 +419,9 @@ Window {
                         anchors.fill: parent
                         clip: true
 
-                        initialItem: pageHome
+                        initialItem: homePageComponent
                     }
+
                 }
 
                 Rectangle {

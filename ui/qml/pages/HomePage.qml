@@ -1,12 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import QtQml
 
 import "../panels"
 import "../controls"
 
-//import core.ItuLogin 1.0
 import core.UserConfig 1.0
 import core.UserSchedules 1.0
 import core.CrnPicker 1.0
@@ -29,6 +28,12 @@ Item {
         id: crnPicker
     }
 
+    Notification{
+        id: notifier
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+    }
+
     LoginPanel{
         id: loginPanel
         width: parent.width/3
@@ -42,6 +47,8 @@ Item {
 
         compactModeSmallWidth: 75
         compactModeSmallHeight: 75
+
+        notifier: notifier
         //compactMode: LoginPanel.CompactMode.SmallTopRight
     }
 
@@ -251,6 +258,52 @@ Item {
                     }
                 }
 
+                CircularProgressBar {
+                    id: requestProgressBar
+
+                    Layout.rowSpan: 2
+                    Layout.columnSpan: 2
+                    Layout.row: 9
+                    Layout.column: 7
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    Layout.preferredHeight: 1
+                    Layout.preferredWidth: 1
+
+                    currentValue: 0
+                    maximumValue: UserConfig.requestInterval
+                    minimumValue: 0
+                    text: (UserConfig.requestInterval - requestProgressBar.currentValue).toFixed(2) + "s"
+                    secondaryColor: "#4891d9"
+                    primaryColor: "#ffffff"
+
+                    Timer{
+                        id: requestTimer
+                        interval: UserConfig.requestInterval * 1000
+                        repeat: true
+                        running: crnPicker.isWorking
+                        triggeredOnStart: true
+                        onTriggered: progressValueAnimation.start()
+                    }
+
+                    NumberAnimation{
+                        id: progressValueAnimation
+                        from: 0
+                        to: UserConfig.requestInterval
+
+                        running: crnPicker.isWorking
+
+                        target: requestProgressBar
+                        property: "currentValue"
+                        duration: UserConfig.requestInterval * 990 // to prevent conflict between timer and animation
+
+                    }
+
+                }
+
+
                 CustomButton{
                     //Layout.alignment: Qt.AlignRight | Qt.AlignBottom
                     Layout.fillHeight: true
@@ -263,22 +316,25 @@ Item {
                     Layout.row: 9
                     Layout.column: 9
 
-                    Component.onCompleted: console.log(crnPicker.isWorking)
-
                     text: crnPicker.isWorking ? "Stop Post Requests" : "Start Post Requests"
-                    highlighted: false
-                    flat: false
                     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
                     Layout.preferredHeight: 1
                     Layout.preferredWidth: 1
-                    //colorDefault:
+                    colorDefault: crnPicker.isWorking ? "#bd0000" : "#009b23"
+                    colorMouseOver: crnPicker.isWorking ? "#f90000" : "#00d22f"
+                    colorPressed: crnPicker.isWorking ? "#bd0000" : "#009b23"
 
-                    onClicked: crnPicker.startRequests()
+                    onClicked: {
+                        if(crnPicker.isWorking){
+                            crnPicker.stopRequests()
+                        }else{
+                            crnPicker.startRequests()
+                        }
+                    }
                 }
             }
         }
     }
-
 
     states: [
         State {

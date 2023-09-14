@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
 
+
 import "../controls"
 
 import core.ItuLogin 1.0
@@ -23,6 +24,8 @@ Rectangle {
     property real compactModeSmallWidth: 75
     property real compactModeSmallHeight: 75
     property int compactMode: LoginPanel.CompactMode.BigTopRight
+
+    property var notifier: undefined
 
 
     enum CompactMode{
@@ -281,15 +284,78 @@ Rectangle {
                     Layout.fillWidth: true
 
                     onClicked: {
-                        ituLogin.login(username.text,password.text)
-                        if(ituLogin.isLoggedIn()){
-                            isLoggedIn = true
-                        }
+                        //isLoggedIn = true
+
+                        busyPopup.open()
+                        busyIndicatorTimer.start()
+
+
                     }
                 }
             }
         }
     }
+
+
+
+    // workaround to not use threads in python
+    // WorkerScript does not work, because we cannot pass ituLogin component
+    Timer {
+        id: busyIndicatorTimer
+        interval: 50
+        onTriggered: {
+            var result = ituLogin.login(username.text,password.text)
+            var returnCode = result[0]
+            var returnMessage = result[1]
+
+
+            if(returnCode){
+                isLoggedIn = true
+                notifier.open(returnMessage,"../../images/svg_images/check_icon.svg", "dark green")
+            } else{
+                isLoggedIn = false
+                notifier.open(returnMessage,"../../images/svg_images/close_icon.svg", "dark red")
+            }
+
+            busyPopup.close()
+
+        }
+    }
+
+    Popup {
+        id: busyPopup
+        anchors.centerIn: parent
+        closePolicy: Popup.NoAutoClose
+        modal: true
+
+
+        onAboutToShow: {
+            busyIndicator.running = true;
+            busyIndicator.visible = true;
+        }
+
+        onAboutToHide: {
+            busyIndicator.running = false;
+            busyIndicator.visible = false;
+        }
+
+        BusyIndicator {
+            id: busyIndicator
+            anchors.fill: parent
+            running: false
+            visible: false
+
+            Material.accent: "#55AAFF"
+
+        }
+
+        background: Rectangle {
+            color: "#cd111219"
+        }
+
+    }
+
+
 
     Image {
         id: imageTopRight

@@ -22,6 +22,8 @@
         "schedules.json",
         "core/schedule_list_model.py",
         "ui/qml/controls/SettingInputBox.qml",
-        "ui/qml/panels/EditSchedulePanel.qml"
+        "ui/qml/panels/EditSchedulePanel.qml",
+        "ui/qml/controls/CircularProgressBar.qml",
+        "ui/qml/controls/Notification.qml"
     ]
 }

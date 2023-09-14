@@ -93,12 +93,20 @@ class CrnPicker(QObject):
         config.request_count = 0
         # emit request cound changed
 
+        self.setIsWorking(True)
+
         schedules = UserSchedules()
         current_schedule_name = config.getCurrentSchedule()
         current_schedule_index = schedules.getIndex(current_schedule_name)
 
         self.payload["ECRN"] = schedules.getECRNList(current_schedule_index)
         self.payload["SCRN"] = schedules.getSCRNList(current_schedule_index)
+
+    @Slot()
+    def stopRequests(self):
+        self.setIsWorking(False)
+
+
 
 
     def sendRequest(self):

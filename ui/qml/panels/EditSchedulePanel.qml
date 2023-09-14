@@ -118,8 +118,8 @@ Item {
                         colorMouseOver: "#00d22f"
                         colorDefault: "#009b23"
                         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                        Layout.preferredHeight: 50
-                        Layout.preferredWidth: 75
+                        Layout.preferredHeight: 70
+                        Layout.preferredWidth: 100
                         Layout.fillWidth: false
                         Layout.fillHeight: false
 
@@ -140,8 +140,8 @@ Item {
                         colorPressed: "#bd0000"
                         colorDefault: "#bd0000"
                         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                        Layout.preferredHeight: 50
-                        Layout.preferredWidth: 75
+                        Layout.preferredHeight: 70
+                        Layout.preferredWidth: 100
 
                         onClicked: root.cancelled()
 
