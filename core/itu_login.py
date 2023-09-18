@@ -2,6 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+import urllib.request
+from os.path import join
 
 from PySide6.QtQml import QmlElement
 from PySide6.QtCore import QObject, Slot, Signal
@@ -58,6 +63,14 @@ class ItuLogin(QObject):
 
         if(self.isLoggedIn()):
             self.setAuthToken()
+            
+            UserConfig().last_username = user_name
+            UserConfig().last_password = password
+            if UserConfig().rememberMe:
+                UserConfig().setUsername(UserConfig().last_username)
+                UserConfig().setPassword(UserConfig().last_password)
+
+            self.getLoginInfo()
             return [True, "Successfully logged in!"]
         
         return [False, "Wrong username or password!"]
@@ -101,3 +114,27 @@ class ItuLogin(QObject):
         """Checks if user is logged in ITU system"""
         self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci")
         return self.driver.title == "Öğrenci Bilgi Sistemi"
+    
+    def getLoginInfo(self):
+
+        try:
+            # Find the img element with class 'media-object' and a title attribute
+            self.driver.get("https://kepler-beta.itu.edu.tr/ogrenci/")
+            img_element = WebDriverWait(self.driver, 5).until(
+                                        EC.visibility_of_element_located((By.CSS_SELECTOR, 'img.media-object[title]')))
+            
+            # Get the source (src) and title attributes of the img element
+            img_src = img_element.get_attribute("src")
+            img_info = img_element.get_attribute("title")
+
+            UserConfig().setFullName(img_info)
+
+            fullfilename = join("./ui/images", "user_photo.png")
+            urllib.request.urlretrieve(img_src, fullfilename)
+
+            # Print the results
+            #print("Image Source:", img_src)
+            #print("Image Title:", img_title)
+
+        except Exception as e:
+            print("Element not found:", str(e))

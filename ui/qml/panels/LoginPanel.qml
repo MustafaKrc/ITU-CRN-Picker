@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
+import Qt5Compat.GraphicalEffects
 
 
 import "../controls"
@@ -9,8 +10,6 @@ import "../Utils.js" as Utils
 
 import core.ItuLogin 1.0
 import core.UserConfig 1.0
-
-import ".."
 
 Rectangle {
     id: login
@@ -30,6 +29,13 @@ Rectangle {
 
     property var notifier: undefined
 
+    Component.onCompleted: {
+        if(UserConfig.keepMeSignedIn){
+            busyPopup.open()
+            busyIndicatorTimer.start()
+        }
+    }
+
 
 
     enum CompactMode{
@@ -41,7 +47,7 @@ Rectangle {
         id: ituLogin
 
         Component.onCompleted: {var a = 0;} // this makes sure onDestruction gets called.
-                                            // if app gets closed wtihout doing anything, onDestruction wouldnt emit..
+        // if app gets closed wtihout doing anything, onDestruction wouldnt emit..
 
         Component.onDestruction: {
             ituLogin.close()
@@ -96,16 +102,41 @@ Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
 
+
             Image {
                 id: image
-                width: 100
-                height: 108
+                width: 90
+                height: 90
                 anchors.verticalCenter: parent.verticalCenter
-                source: "../../images/svg_images/guest_icon.svg"
+                source: {
+                    if((UserConfig.rememberMe && Utils.fileExists("../../images/user_photo.png")) || isLoggedIn){
+                        "../../images/user_photo.png"
+                    }else{
+                        "../../images/svg_images/guest_icon.svg"
+                    }
+                }
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 sourceSize.height: 170
                 sourceSize.width: 170
-                fillMode: Image.PreserveAspectFit
+                fillMode: Image.PreserveAspectCrop
+
+                property bool rounded: true
+                property bool adapt: false
+
+                layer.enabled: rounded
+                layer.effect: OpacityMask {
+                    maskSource: Item {
+                        width: image.width
+                        height: image.height
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: image.adapt ? image.width : Math.min(image.width, image.height)
+                            height: image.adapt ? image.height : width
+                            radius: Math.min(width, height)
+                        }
+                    }
+                }
             }
 
             Text {
@@ -113,9 +144,10 @@ Rectangle {
                 visible: false
                 opacity: 0
                 color: "#ffffff"
-                text: qsTr("Logged in as USERNAME")
+                text: qsTr("Logged in as ") + UserConfig.fullName
                 anchors.verticalCenter: image.verticalCenter
                 anchors.left: image.right
+                anchors.leftMargin: 5
                 anchors.right: parent.right
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
@@ -194,6 +226,12 @@ Rectangle {
                             }
                         }
                     }
+
+                    Component.onCompleted: {
+                        if(UserConfig.rememberMe){
+                            username.text = UserConfig.username
+                        }
+                    }
                 }
 
                 TextField {
@@ -255,12 +293,13 @@ Rectangle {
                             }
                         }
                     }
+
+                    Component.onCompleted: {
+                        if(UserConfig.rememberMe){
+                            password.text = UserConfig.password
+                        }
+                    }
                 }
-
-
-
-
-
             }
         }
 
@@ -339,7 +378,6 @@ Rectangle {
             var returnCode = result[0]
             var returnMessage = result[1]
 
-
             if(returnCode){
                 isLoggedIn = true
                 Utils.notify(notifier, returnMessage,"../../images/svg_images/check_icon.svg", "dark green")
@@ -390,17 +428,39 @@ Rectangle {
 
     Image {
         id: imageTopRight
+        x: login.parent.width - width - 10
+        y: 10
         width: 50
         height: 50
         visible: false
         opacity: 0
-        source: "../../images/svg_images/guest_icon.svg"
+        source: {
+            if((UserConfig.rememberMe && Utils.fileExists("../../images/user_photo.png")) || isLoggedIn){
+                "../../images/user_photo.png"
+            }else{
+                "../../images/svg_images/guest_icon.svg"
+            }
+        }
         sourceSize.height: 170
         sourceSize.width: 170
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
 
-        x: login.parent.width - width - 10
-        y: 10
+        property bool rounded: true
+        property bool adapt: false
+
+        layer.enabled: rounded
+        layer.effect: OpacityMask {
+            maskSource: Item {
+                width: image.width
+                height: image.height
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: image.adapt ? image.width : Math.min(image.width, image.height)
+                    height: image.adapt ? image.height : width
+                    radius: Math.min(width, height)
+                }
+            }
+        }
 
         MouseArea{
             anchors.fill: parent
@@ -454,7 +514,6 @@ Rectangle {
             PropertyChanges {
                 target: loginCompactInfo
                 visible: true
-                text: qsTr("Logged in as USERNAME ")
                 font.pixelSize: 15
                 opacity: 1
             }

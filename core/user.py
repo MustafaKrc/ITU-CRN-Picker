@@ -1,6 +1,6 @@
 import configparser
 import json
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 from os.path import join, dirname
 from os import getenv
 from dataclasses import dataclass
@@ -184,7 +184,7 @@ class UserConfig(QObject):
             return
 
         self.initialized = True
-
+        self.dotenv_path = join(dirname(dirname(__file__)), ".env")
         super().__init__(parent)
 
         try: 
@@ -195,8 +195,7 @@ class UserConfig(QObject):
 
         
         try:
-            dotenv_path = join(dirname(dirname(__file__)), ".env")
-            load_dotenv(dotenv_path)
+            load_dotenv(self.dotenv_path)
         except Exception as e:
             print(f"An error occured: {e}")
 
@@ -206,6 +205,10 @@ class UserConfig(QObject):
         self._username = self._username if self._username != "" else None
         self._password = self._password if self._password != "" else None
         
+        self.last_username = self._username
+        self.last_password = self._password
+
+        self.full_name = ""
 
         self.auth_token = None
         self.request_count = 0
@@ -243,6 +246,23 @@ class UserConfig(QObject):
 
         return [True, "Settings are successfully saved."]
     
+    # fullName qml property
+
+    def getFullName(self):
+        return self.full_name
+    
+    def setFullName(self, value):
+        self.full_name = value
+        self.fullNameChanged.emit()
+        pass
+
+    @Signal
+    def fullNameChanged(self):
+        pass
+    
+    fullName = Property(str, getFullName, 
+                        setFullName, notify=fullNameChanged)
+    
     # username qml property
 
     def getUsername(self):
@@ -250,6 +270,7 @@ class UserConfig(QObject):
 
     def setUsername(self, value):
         self._username = value
+        set_key(self.dotenv_path,"ITUusername",value)
         self.usernameChanged.emit()
 
     @Signal
@@ -266,6 +287,7 @@ class UserConfig(QObject):
 
     def setPassword(self, value):
         self._password = value
+        set_key(self.dotenv_path,"ITUpassword",value)
         self.passwordChanged.emit()
 
     @Signal
@@ -324,6 +346,14 @@ class UserConfig(QObject):
 
     def setRememberMe(self, value):
         self._rememberMe = value
+        if value:
+            if self.last_username is not None and self.last_password is not None:
+                self.setUsername(self.last_username)
+                self.setPassword(self.last_password)
+        if not value:
+            self.setUsername("")
+            self.setPassword("")
+            self.setKeepMeSignedIn(False)
         self.config["login"]["remember_me"] = str(value)
         self.rememberMeChanged.emit()
         self.saveConfig()
@@ -342,6 +372,8 @@ class UserConfig(QObject):
 
     def setKeepMeSignedIn(self, value):
         self._keepMeSignedIn = value
+        if value:
+            self.setRememberMe(True)
         self.config["login"]["keep_me_signed_in"] = str(value)
         self.keepMeSignedInChanged.emit()
         self.saveConfig()
