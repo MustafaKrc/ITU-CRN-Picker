@@ -4,8 +4,3 @@ function notify(notifier, notificationText, imageSource, notificationColor) {
 
     notifier.open(notificationText, imageSource, notificationColor)
 }
-
-function fileExists(filePath) {
-    var file = Qt.resolvedUrl(filePath)
-    return file !== ""
-}

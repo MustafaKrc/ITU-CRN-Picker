@@ -109,7 +109,7 @@ Rectangle {
                 height: 90
                 anchors.verticalCenter: parent.verticalCenter
                 source: {
-                    if((UserConfig.rememberMe && Utils.fileExists("../../images/user_photo.png")) || isLoggedIn){
+                    if(UserConfig.rememberMe || isLoggedIn){
                         "../../images/user_photo.png"
                     }else{
                         "../../images/svg_images/guest_icon.svg"
@@ -134,6 +134,20 @@ Rectangle {
                             width: image.adapt ? image.width : Math.min(image.width, image.height)
                             height: image.adapt ? image.height : width
                             radius: Math.min(width, height)
+                        }
+                    }
+                }
+
+                property int errorCount: 0
+
+                onStatusChanged: {
+                    if (image.status == Image.Error) {
+                        errorCount += 1;
+                        if (errorCount === 1) {
+                            image.source = ""  // Gotta clear the source
+                            image.source = "../../images/user_photo.png";
+                        } else {
+                            image.source = "../../images/svg_images/guest_icon.svg";
                         }
                     }
                 }
@@ -435,7 +449,7 @@ Rectangle {
         visible: false
         opacity: 0
         source: {
-            if((UserConfig.rememberMe && Utils.fileExists("../../images/user_photo.png")) || isLoggedIn){
+            if(UserConfig.rememberMe || isLoggedIn){
                 "../../images/user_photo.png"
             }else{
                 "../../images/svg_images/guest_icon.svg"
@@ -467,6 +481,19 @@ Rectangle {
             onClicked: login.isLoggedIn = false
         }
 
+        property int errorCount: 0
+
+        onStatusChanged: {
+            if (image.status == Image.Error) {
+                errorCount += 1;
+                if (errorCount === 1) {
+                    image.source = ""  // Gotta clear the source
+                    image.source = "../../images/user_photo.png";
+                } else {
+                    image.source = "../../images/svg_images/guest_icon.svg";
+                }
+            }
+        }
     }
 
     states: [
