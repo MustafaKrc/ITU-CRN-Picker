@@ -72,3 +72,9 @@ CMakeLists.txt.user*
 *.dll
 *.exe
 
+.env
+*.pyc
+ui/images/user_photo.png
+config.ini
+core/UserConfig/
+core/__pycache__/

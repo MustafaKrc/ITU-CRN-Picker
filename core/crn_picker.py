@@ -86,14 +86,9 @@ class CrnPicker(QObject):
     def startRequests(self):
         config = UserConfig()
 
-        #del config.latest_response
-        config.latest_response.clear()
-        config.latestResponseChanged.emit()
+        #config.latest_response.clear()
+        #config.latestResponseChanged.emit()
 
-        config.request_count = 0
-        # emit request cound changed
-
-        self.setIsWorking(True)
 
         schedules = UserSchedules()
         current_schedule_name = config.getCurrentSchedule()
@@ -102,19 +97,30 @@ class CrnPicker(QObject):
         self.payload["ECRN"] = schedules.getECRNList(current_schedule_index)
         self.payload["SCRN"] = schedules.getSCRNList(current_schedule_index)
 
+        self.setIsWorking(True)
+
     @Slot()
     def stopRequests(self):
         self.setIsWorking(False)
 
+    @Slot()
+    def test(self):
+        # debug function to be used instead sendRequest
+        
+        config = UserConfig()
+        config.setRequestCount(config.getRequestCount() + 1)
+        
 
-
-
+    @Slot()
     def sendRequest(self):
         """Sends request ford CRN picking/dropping.
 
         Grabs the latest auth token before sending the request.
 
         Returns the response."""
+        self.test()
+        return # preventing post requests for now
+
         self.updateAuthToken()
         response = requests.post(
             "https://kepler-beta.itu.edu.tr/api/ders-kayit/v21",

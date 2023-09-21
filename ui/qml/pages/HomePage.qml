@@ -4,10 +4,12 @@ import QtQuick.Layouts
 
 import "../panels"
 import "../controls"
+import "../Utils.js" as Utils
 
 import core.UserConfig 1.0
 import core.UserSchedules 1.0
 import core.CrnPicker 1.0
+
 
 Item {
     id: homePage
@@ -16,6 +18,9 @@ Item {
     property color textColor: "#ffffff"
 
     property var notifier: undefined
+
+    property int timeElapsedWorking: 0
+
 
 
     Rectangle {
@@ -232,27 +237,49 @@ Item {
                             font.pixelSize: 25
                         }
 
+
                         model: ListModel{
-                            ListElement {
-                                statistic: "Post Request Made"
-                                value: 555
-                                prefix: ""
-                                postfix: ""
-                            }
-                            ListElement {
-                                statistic: "Success Rate"
-                                value: 87
-                                prefix: "%"
-                                postfix: ""
-                            }
-                            ListElement {
-                                statistic: "Running Since"
-                                value: 55
-                                prefix: ""
-                                postfix: " minutes"
+                            // this is an ugly hack to use binding in ListElements
+                            // https://stackoverflow.com/questions/7659442/listelement-fields-as-properties
+
+                            id: statisticsModel
+
+                            property bool completed: false
+                            Component.onCompleted: {
+                                append({statistic: "Post Request Made", value: UserConfig.requestCount.toString(),
+                                           prefix: "" , postfix: ""});
+
+                                append({statistic: "Success Rate", value: "87", // to be implemented
+                                           prefix: "%" , postfix: ""});
+
+                                append({statistic: "Running Since", value: Utils.secondsToDate(timeElapsedWorking).toString(),
+                                           prefix: "" , postfix: ""});
+
+                                completed = true;
                             }
 
                         }
+                        // Update the list model:
+
+                        // setProperty(index, data, value)
+                        // index is the index of the element in the model,
+                        // data is the variable in model
+                        // value is the new value
+
+                        Connections{
+                            target: UserConfig
+                            function onRequestCountChanged() {
+                                if(statisticsModel.completed) statisticsModel.setProperty(0, "value", UserConfig.requestCount.toString());
+                            }
+                        }
+
+                        Connections{
+                            target: homePage
+                            function onTimeElapsedWorkingChanged(){
+                                if(statisticsModel.completed) statisticsModel.setProperty(2, "value", Utils.secondsToDate(timeElapsedWorking).toString());
+                            }
+                        }
+
                     }
                 }
 
@@ -334,6 +361,30 @@ Item {
         }
     }
 
+    Timer{
+        id: workingTimeCounter
+        interval: 1000 // 1 second
+        repeat: true
+        running: scheduler.running
+        triggeredOnStart: false
+
+        onTriggered: {
+            homePage.timeElapsedWorking += 1
+        }
+    }
+
+    Timer{
+        id: scheduler
+        interval: UserConfig.requestInterval * 1000
+        repeat: true
+        running: crnPicker.isWorking
+        triggeredOnStart: true
+        onTriggered: {
+            crnPicker.sendRequest()
+        }
+
+    }
+
     states: [
         State {
             name: "Logged In"
@@ -364,34 +415,5 @@ Item {
             }
         }
     ]
-
-    /*
-    ItuLogin{
-                id: logger
-
-                Component.onCompleted: console.log(logger.isLoggedIn())
-            }
-    */
-
-    /*
-    Loader{
-        id: loaderLogin
-        asynchronous: true
-
-        sourceComponent: ItuLogin{
-            id: logger
-
-            Component.onCompleted: console.log(logger.isLoggedIn())
-        }
-
-    }
-
-
-
-    Text {
-        id: name
-        text: "logger.isLoggedIn()"
-    }
-*/
 
 }

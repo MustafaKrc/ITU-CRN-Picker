@@ -8,7 +8,8 @@ import "./controls"
 import "./pages"
 // dont need to import qml files in same directory
 import core.UserConfig 1.0
-
+import core.InternetChecker 1.0
+import "./Utils.js" as Utils
 
 Window {
     id: mainWindow
@@ -358,6 +359,22 @@ Window {
                     anchors.bottomMargin: 25
                     anchors.leftMargin: 0
                     anchors.topMargin: 0
+
+                    Component.onCompleted: InternetConnectionChecker.startSchedule()
+
+
+                    Connections{
+                        target: InternetConnectionChecker
+                        function onHasInternetConnectionChanged() {
+                            if (InternetConnectionChecker.hasInternetConnection) {
+                                Utils.notify(mainPageNotifier, "Connected to internet",
+                                             "../../images/svg_images/check_icon.svg", "dark green")
+                            } else{
+                                Utils.notify(mainPageNotifier, "Disconnected from internet",
+                                             "../../images/svg_images/close_icon.svg", "dark red")
+                            }
+                        }
+                    }
 
                     Notification{
                         id: mainPageNotifier

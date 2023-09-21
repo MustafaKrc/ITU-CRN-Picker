@@ -418,3 +418,19 @@ class UserConfig(QObject):
                               setMaxRequestCount, notify=maxRequestCountChanged)
 
 
+    # requestCount qml property
+    
+    def getRequestCount(self):
+        return self.request_count
+
+    def setRequestCount(self, value):
+        self.request_count = value
+        self.requestCountChanged.emit()
+        
+        
+    @Signal
+    def requestCountChanged(self):
+        pass
+    requestCount = Property(int, getRequestCount,
+                              setRequestCount, notify=requestCountChanged)
+

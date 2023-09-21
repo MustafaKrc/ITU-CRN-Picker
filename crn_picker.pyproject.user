@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 11.0.2, 2023-09-14T11:27:08. -->
+<!-- Written by QtCreator 11.0.2, 2023-09-20T01:10:56. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -146,13 +146,13 @@
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="bool" key="PE.EnvironmentAspect.PrintOnRun">false</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">main.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration.C:/Users/mustafa/Desktop/qt_projects/crn_picker/main.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/mustafa/Desktop/qt_projects/crn_picker/main.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration.C:/Users/mustafa/Desktop/qt_projects/ITU-CRN-Picker/main.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/mustafa/Desktop/qt_projects/ITU-CRN-Picker/main.py</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{1515d021-c19b-4ff9-bf9b-6a7835d5cd0f}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">C:\Users\mustafa\Desktop\qt_projects\crn_picker\main.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">C:\Users\mustafa\Desktop\qt_projects\ITU-CRN-Picker\main.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Users/mustafa/Desktop/qt_projects/crn_picker</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Users/mustafa/Desktop/qt_projects/ITU-CRN-Picker</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>
