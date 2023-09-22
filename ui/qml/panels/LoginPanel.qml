@@ -55,6 +55,10 @@ Rectangle {
 
     }
 
+    function refreshAuthToken(){
+        ituLogin.refreshAuthToken()
+    }
+
 
     MouseArea{
         id: logoutMouseArea

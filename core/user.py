@@ -226,8 +226,9 @@ class UserConfig(QObject):
 
         self._rememberMe = self.config["login"]["remember_me"].lower() == "true"
         self._keepMeSignedIn = self.config["login"]["keep_me_signed_in"].lower() == "true"
-        self._requestInterval = self.config["request"]["request_interval"]
-        self._maxRequestCount = self.config["request"]["max_request_count"]
+        self._requestInterval = float(self.config["request"]["request_interval"])
+        self._maxRequestCount = int(self.config["request"]["max_request_count"])
+        self._token_refresh_interval = int(self.config["token"]["token_refresh_interval"])
         self._version = self.config["about"]["version"]
         self._currentSchedule = self.config["schedule"]["current_schedule"]
 
@@ -254,7 +255,6 @@ class UserConfig(QObject):
     def setFullName(self, value):
         self.full_name = value
         self.fullNameChanged.emit()
-        pass
 
     @Signal
     def fullNameChanged(self):
@@ -338,7 +338,6 @@ class UserConfig(QObject):
     
     version = Property(str, getVersion,constant=True)
     
-
     # rememberMe qml property
 
     def getRememberMe(self):
@@ -381,6 +380,7 @@ class UserConfig(QObject):
     @Signal
     def keepMeSignedInChanged(self):
         pass
+
     keepMeSignedIn = Property(bool, getKeepMeSignedIn,
                               setKeepMeSignedIn, notify=keepMeSignedInChanged)
     
@@ -391,14 +391,15 @@ class UserConfig(QObject):
 
     def setRequestInterval(self, value):
         self._requestInterval = value
-        self.config["request"]["request_interval"] = value
+        self.config["request"]["request_interval"] = str(value)
         self.requestIntervalChanged.emit()
         self.saveConfig()
 
     @Signal
     def requestIntervalChanged(self):
         pass
-    requestInterval = Property(str, getRequestInterval,
+
+    requestInterval = Property(float, getRequestInterval,
                               setRequestInterval, notify=requestIntervalChanged)
     
     # maxRequestCount qml property
@@ -408,15 +409,16 @@ class UserConfig(QObject):
 
     def setMaxRequestCount(self, value):
         self._maxRequestCount = value
-        self.config["request"]["max_request_count"] = value
+        self.config["request"]["max_request_count"] = str(value)
+        self.maxRequestCountChanged.emit()
         self.saveConfig()
         
     @Signal
     def maxRequestCountChanged(self):
         pass
-    maxRequestCount = Property(str, getMaxRequestCount,
-                              setMaxRequestCount, notify=maxRequestCountChanged)
 
+    maxRequestCount = Property(int, getMaxRequestCount,
+                              setMaxRequestCount, notify=maxRequestCountChanged)
 
     # requestCount qml property
     
@@ -427,10 +429,28 @@ class UserConfig(QObject):
         self.request_count = value
         self.requestCountChanged.emit()
         
-        
     @Signal
     def requestCountChanged(self):
         pass
+
     requestCount = Property(int, getRequestCount,
                               setRequestCount, notify=requestCountChanged)
+    
+    # requestCount qml property
+    
+    def getTokenRefreshInterval(self):
+        return self._token_refresh_interval
+
+    def setTokenRefreshInterval(self, value):
+        self._token_refresh_interval = value
+        self.config["token"]["token_refresh_interval"] = str(value)
+        self.tokenRefreshIntervalChanged.emit()
+        self.saveConfig()
+        
+    @Signal
+    def tokenRefreshIntervalChanged(self):
+        pass
+
+    tokenRefreshInterval = Property(int, getTokenRefreshInterval,
+                              setTokenRefreshInterval, notify=tokenRefreshIntervalChanged)
 

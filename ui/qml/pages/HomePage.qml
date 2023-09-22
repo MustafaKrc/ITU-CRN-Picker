@@ -385,6 +385,19 @@ Item {
 
     }
 
+    Timer{
+        id: tokenRefresh
+        interval: UserConfig.tokenRefreshInterval * 1000
+        repeat: true
+        running: true
+        triggeredOnStart: false
+
+        onTriggered: {
+            loginPanel.refreshAuthToken()
+        }
+
+    }
+
     states: [
         State {
             name: "Logged In"

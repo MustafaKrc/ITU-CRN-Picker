@@ -41,7 +41,7 @@ class ItuLogin(QObject):
         self.driver_restore_scheduler = sched.scheduler(time,sleep)
 
         self.options = Options()
-        #self.options.add_argument("headless")  # makes chrome invisible
+        self.options.add_argument("headless")  # makes chrome invisible
         self.options.add_argument("--log-level=3")  # hides chrome error messages.
 
         self.__service = ChromeService()
@@ -174,9 +174,6 @@ class ItuLogin(QObject):
             fullfilename = join("./ui/images", "user_photo.png")
             urllib.request.urlretrieve(img_src, fullfilename)
 
-            # Print the results
-            #print("Image Source:", img_src)
-            #print("Image Title:", img_title)
 
         except Exception as e:
             print("Element not found:", str(e))
