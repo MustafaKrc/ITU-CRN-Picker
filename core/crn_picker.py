@@ -108,6 +108,11 @@ class CrnPicker(QObject):
         # debug function to be used instead sendRequest
         
         config = UserConfig()
+
+        if config.getRequestCount() >= config.getMaxRequestCount():
+            self.setIsWorking(False)
+            return
+
         config.setRequestCount(config.getRequestCount() + 1)
         
 

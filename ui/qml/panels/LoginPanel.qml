@@ -372,8 +372,6 @@ Rectangle {
                     Layout.fillWidth: true
 
                     onClicked: {
-                        //isLoggedIn = true
-
                         busyPopup.open()
                         busyIndicatorTimer.start()
 

@@ -34,8 +34,6 @@ Item {
         id: crnPicker
     }
 
-
-
     LoginPanel{
         id: loginPanel
         width: parent.width/3
@@ -160,57 +158,70 @@ Item {
                     Layout.preferredHeight: 1
                     clip: true
 
-                    Column{
-                        id: column
+                    Flickable{
                         anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
+                        contentHeight: column.implicitHeight + column.anchors.margins * 2
+                        clip: true
 
-                        Text{
-                            text: "CRNs to be picked:"
-                            color: textColor
-                            font.pixelSize: 25
-                        }
+                        Column{
+                            id: column
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 20
 
-                        ListView{
-                            model: schedule.currentScheduleECRN
-                            height: contentHeight
-                            width: column.width
-
-                            delegate: Text{
-                                text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]
-                                                                                               : "Post request is not sent")
+                            Text{
+                                text: "CRNs to be picked:"
                                 color: textColor
-                                font.pixelSize: 20
+                                font.pixelSize: 25
                             }
-                        }
 
-                        Text{
-                            text: "CRNs to be dropped:"
-                            color: textColor
-                            font.pixelSize: 25
-                        }
+                            ListView{
+                                model: schedule.currentScheduleECRN
+                                height: contentHeight
+                                width: column.width
+                                spacing: 10
+                                interactive: false
 
-                        ListView{
-                            model: schedule.currentScheduleSCRN
-                            height: contentHeight
-                            width: column.width
+                                delegate: Text{
+                                    text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
+                                                                                                   : "Post request is not sent")
+                                    color: textColor
+                                    font.pixelSize: 20
+                                    wrapMode: Text.WordWrap
+                                    width: parent.width
+                                }
+                            }
 
-                            delegate: Text{
-                                text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]
-                                                                                               : "Post request is not sent")
+                            Text{
+                                text: "CRNs to be dropped:"
                                 color: textColor
-                                font.pixelSize: 20
+                                font.pixelSize: 25
+                            }
+
+                            ListView{
+                                model: schedule.currentScheduleSCRN
+                                height: contentHeight
+                                width: column.width
+                                spacing: 10
+                                interactive: false
+
+                                delegate: Text{
+                                    text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
+                                                                                                   : "Post request is not sent")
+                                    color: textColor
+                                    font.pixelSize: 20
+                                    wrapMode: Text.WordWrap
+                                    width: parent.width
+                                }
                             }
                         }
                     }
                 }
 
-
                 Rectangle{
-                    id: statisticsBackground
+                    id: statisticsLayout
                     Layout.alignment: Qt.AlignRight
-                    color: backgroundColor
+                    color: "transparent"
                     Layout.rowSpan: 9
                     Layout.columnSpan: 4
                     Layout.row:0
@@ -219,65 +230,103 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    radius: 15
                     Layout.preferredWidth: 1
                     Layout.preferredHeight: 18
 
                     clip: true
+                    Rectangle{
+                        id: statisticsBackground
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        height: statistics.height + statistics.anchors.margins * 2
 
-                    ListView{
-                        id: statistics
-                        anchors.fill: parent
-                        anchors.margins: 5
-                        spacing: 15
+                        color: backgroundColor
+                        radius: 15
 
-                        delegate: Text {
-                            text: statistic + ": " + prefix + value + postfix
-                            color: textColor
-                            font.pixelSize: 25
-                        }
+                        ListView{
+                            id: statistics
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: Math.min(statisticsLayout.height, contentHeight)
+                            anchors.margins: 10
+                            spacing: 15
+                            clip: true
 
-
-                        model: ListModel{
-                            // this is an ugly hack to use binding in ListElements
-                            // https://stackoverflow.com/questions/7659442/listelement-fields-as-properties
-
-                            id: statisticsModel
-
-                            property bool completed: false
-                            Component.onCompleted: {
-                                append({statistic: "Post Request Made", value: UserConfig.requestCount.toString(),
-                                           prefix: "" , postfix: ""});
-
-                                append({statistic: "Success Rate", value: "87", // to be implemented
-                                           prefix: "%" , postfix: ""});
-
-                                append({statistic: "Running Since", value: Utils.secondsToDate(timeElapsedWorking).toString(),
-                                           prefix: "" , postfix: ""});
-
-                                completed = true;
+                            delegate: Text {
+                                text: statistic + ": " + prefix + value + postfix
+                                color: textColor
+                                font.pixelSize: 25
+                                wrapMode: Text.WordWrap
+                                width: parent.width
                             }
 
-                        }
-                        // Update the list model:
 
-                        // setProperty(index, data, value)
-                        // index is the index of the element in the model,
-                        // data is the variable in model
-                        // value is the new value
+                            model: ListModel{
+                                // this is an ugly hack to use binding in ListElements
+                                // https://stackoverflow.com/questions/7659442/listelement-fields-as-properties
 
-                        Connections{
-                            target: UserConfig
-                            function onRequestCountChanged() {
-                                if(statisticsModel.completed) statisticsModel.setProperty(0, "value", UserConfig.requestCount.toString());
+                                id: statisticsModel
+
+                                property bool completed: false
+                                Component.onCompleted: {
+                                    append({statistic: "Post Request Made", value: UserConfig.requestCount.toString(),
+                                               prefix: "" , postfix: ""});
+
+                                    append({statistic: "Success Rate", value: statistics.calculateSuccessPercantage().toString(),
+                                               prefix: "%" , postfix: ""});
+
+                                    append({statistic: "Running Since", value: Utils.secondsToDate(timeElapsedWorking).toString(),
+                                               prefix: "" , postfix: ""});
+
+                                    completed = true;
+                                }
+
                             }
-                        }
+                            // Update the list model:
 
-                        Connections{
-                            target: homePage
-                            function onTimeElapsedWorkingChanged(){
-                                if(statisticsModel.completed) statisticsModel.setProperty(2, "value", Utils.secondsToDate(timeElapsedWorking).toString());
+                            // setProperty(index, data, value)
+                            // index is the index of the element in the model,
+                            // data is the variable in model
+                            // value is the new value
+
+                            Connections{
+                                target: UserConfig
+                                function onRequestCountChanged() {
+                                    if(statisticsModel.completed) statisticsModel.setProperty(0, "value", UserConfig.requestCount.toString());
+                                }
                             }
+
+                            Connections{
+                                target: UserConfig
+                                function onLatestResponseChanged(){
+                                    if(statisticsModel.completed) statisticsModel.setProperty(1, "value", statistics.calculateSuccessPercantage().toString());
+                                }
+                            }
+
+                            Connections{
+                                target: homePage
+                                function onTimeElapsedWorkingChanged(){
+                                    if(statisticsModel.completed) statisticsModel.setProperty(2, "value", Utils.secondsToDate(timeElapsedWorking).toString());
+                                }
+                            }
+
+                            function calculateSuccessPercantage(){
+                                var total = 0
+                                var success = 0
+                                for (const [key, value] of Object.entries(UserConfig.latestResponse)) {
+                                    if(value["statusCode"] === "0"){
+                                        success += 1
+                                    }
+                                    total += 1
+                                }
+
+                                if(total === 0) return 0
+
+                                return 100 * success / total
+                            }
+
                         }
 
                     }
@@ -322,12 +371,11 @@ Item {
 
                         target: requestProgressBar
                         property: "currentValue"
-                        duration: UserConfig.requestInterval * 990 // to prevent conflict between timer and animation
+                        duration: UserConfig.requestInterval * 975 // to prevent conflict between timer and animation
 
                     }
 
                 }
-
 
                 CustomButton{
                     //Layout.alignment: Qt.AlignRight | Qt.AlignBottom
@@ -365,7 +413,7 @@ Item {
         id: workingTimeCounter
         interval: 1000 // 1 second
         repeat: true
-        running: scheduler.running
+        running: requestScheduler.running
         triggeredOnStart: false
 
         onTriggered: {
@@ -374,7 +422,7 @@ Item {
     }
 
     Timer{
-        id: scheduler
+        id: requestScheduler
         interval: UserConfig.requestInterval * 1000
         repeat: true
         running: crnPicker.isWorking
@@ -389,7 +437,7 @@ Item {
         id: tokenRefresh
         interval: UserConfig.tokenRefreshInterval * 1000
         repeat: true
-        running: true
+        running: loginPanel.isLoggedIn
         triggeredOnStart: false
 
         onTriggered: {
@@ -428,5 +476,6 @@ Item {
             }
         }
     ]
+
 
 }
