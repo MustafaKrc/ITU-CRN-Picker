@@ -109,7 +109,7 @@ class CrnPicker(QObject):
         
         config = UserConfig()
 
-        if config.getRequestCount() >= config.getMaxRequestCount():
+        if config.getMaxRequestCount() != -1 and config.getRequestCount() >= config.getMaxRequestCount():
             self.setIsWorking(False)
             return
 

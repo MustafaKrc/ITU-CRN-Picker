@@ -181,8 +181,17 @@ Item {
                             imageWidth: 24
 
                             onClicked:{
+
+                                if(index === UserSchedules.getIndex(UserConfig.currentSchedule)){
+                                    UserConfig.currentSchedule = ""
+                                }
+
                                 UserSchedules.deleteSchedule(index)
                                 userSchedulesModel.updateModel()
+
+                                UserConfig.currentScheduleChanged()
+
+
                             }
                         }
                     }

@@ -22,9 +22,6 @@ Flickable {
     contentHeight: settingHeader.height + settingHeader.anchors.topMargin + settingHeader.anchors.bottomMargin +
                    settings.implicitHeight + settings.anchors.bottomMargin + settings.anchors.topMargin
 
-    ScrollBar.vertical: ScrollBar {
-        parent: parent
-    }
 
     Rectangle {
         id: settingHeader

@@ -398,6 +398,8 @@ Item {
                     colorPressed: crnPicker.isWorking ? "#bd0000" : "#009b23"
 
                     onClicked: {
+                        if(UserConfig.currentSchedule === "") return
+
                         if(crnPicker.isWorking){
                             crnPicker.stopRequests()
                         }else{
