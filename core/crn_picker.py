@@ -94,8 +94,8 @@ class CrnPicker(QObject):
         current_schedule_name = config.getCurrentSchedule()
         current_schedule_index = schedules.getIndex(current_schedule_name)
 
-        self.payload["ECRN"] = schedules.getECRNList(current_schedule_index)
-        self.payload["SCRN"] = schedules.getSCRNList(current_schedule_index)
+        self.payload["ECRN"] = [str(schedule) for schedule in schedules.getECRNList(current_schedule_index)]
+        self.payload["SCRN"] = [str(schedule) for schedule in schedules.getSCRNList(current_schedule_index)]
 
         self.setIsWorking(True)
 
@@ -104,27 +104,19 @@ class CrnPicker(QObject):
         self.setIsWorking(False)
 
     @Slot()
-    def test(self):
-        # debug function to be used instead sendRequest
-        
-        config = UserConfig()
-
-        if config.getMaxRequestCount() != -1 and config.getRequestCount() >= config.getMaxRequestCount():
-            self.setIsWorking(False)
-            return
-
-        config.setRequestCount(config.getRequestCount() + 1)
-        
-
-    @Slot()
     def sendRequest(self):
         """Sends request ford CRN picking/dropping.
 
         Grabs the latest auth token before sending the request.
 
         Returns the response."""
-        self.test()
-        return # preventing post requests for now
+
+        config = UserConfig()
+
+        if config.getMaxRequestCount() != -1 and config.getRequestCount() >= config.getMaxRequestCount():
+            self.setIsWorking(False)
+            return
+
 
         self.updateAuthToken()
         response = requests.post(
@@ -132,7 +124,8 @@ class CrnPicker(QObject):
             headers=self.headers,
             json=self.payload,
         )
-        UserConfig.request_count += 1
+
+        config.setRequestCount(config.getRequestCount() + 1)
         self.identifyResponse(response)
 
     def updateAuthToken(self):
@@ -149,7 +142,7 @@ class CrnPicker(QObject):
         If CRN operation was successfull:
         - Updates the UserConfig.latest_response as successfull.
         - Removes the CRN from the ECRN or SCRN list. (from the one that it belongs)"""
-        response_content = loads(response.content)
+        response_content = response.json()
 
         for element in response_content["ecrnResultList"]:
             UserConfig().latest_response.update(
@@ -179,5 +172,5 @@ class CrnPicker(QObject):
             if str(element["statusCode"]) == "0":
                 self.payload["SCRN"].remove(element["crn"])
 
-        UserConfig.latestResponseChanged.emit()
+        UserConfig().latestResponseChanged.emit()
 

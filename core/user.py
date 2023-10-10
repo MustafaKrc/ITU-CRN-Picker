@@ -213,36 +213,8 @@ class UserConfig(QObject):
         self.auth_token = None
         self.request_count = 0
 
-        # mocking data
-        self.latest_response = {
-            "11111": {
-                        "type": "ECRN",
-                        "statusCode": "0",
-                        "message": 'The course with CRN { element["crn"]} has been successfully added.',
-                    },
-            "22222": {
-                        "type": "ECRN",
-                        "statusCode": "0",
-                        "message": 'The course with CRN { element["crn"]} has been successfully added.',
-                    },
-            "5455": {
-                        "type": "ECRN",
-                        "statusCode": "1",
-                        "message": 'The course with CRN { element["crn"]} has been successfully added.',
-                    },
-            "88888": {
-                        "type": "ECRN",
-                        "statusCode": "1",
-                        "message": 'The course with CRN { element["crn"]} has been successfully added.',
-                    },
-            "99999": {
-                        "type": "ECRN",
-                        "statusCode": "0",
-                        "message": 'The course with CRN { element["crn"]} has been successfully added.',
-                    },
-        }
 
-        #self.latest_response = dict()
+        self.latest_response = dict()
 
         self._rememberMe = self.config["login"]["remember_me"].lower() == "true"
         self._keepMeSignedIn = self.config["login"]["keep_me_signed_in"].lower() == "true"
