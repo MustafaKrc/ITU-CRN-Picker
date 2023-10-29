@@ -3,9 +3,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../controls"
+import "../Utils.js" as Utils
 
 import core.UserSchedules 1.0
 import core.UserConfig 1.0
+import core.CrnPicker 1.0
 
 Item {
     id: mySchedulesPage
@@ -152,7 +154,16 @@ Item {
                             imageHeight: 24
                             imageWidth: 24
 
-                            onClicked: UserConfig.currentSchedule = scheduleName
+                            onClicked: {
+                                if(CrnPicker.isWorking){
+                                    Utils.notify(notifier, "Stop post request to change current schedule", "../../images/svg_images/close_icon.svg", "dark red")
+                                    return
+                                }
+
+                                UserConfig.currentSchedule = scheduleName
+                                Utils.notify(notifier, "Changed current schedule","../../images/svg_images/check_icon.svg", "dark green")
+
+                            }
                         }
 
                         TopBarButton{
@@ -165,6 +176,12 @@ Item {
                             imageWidth: 24
 
                             onClicked: {
+
+                                if(UserConfig.currentSchedule === scheduleName && CrnPicker.isWorking){
+                                    Utils.notify(notifier, "Stop post requests to edit the schedule", "../../images/svg_images/close_icon.svg", "dark red")
+                                    return
+                                }
+
                                 scheduleEditLoader.scheduleIndex = index
                                 scheduleEditLoader.active = true
                             }
@@ -181,6 +198,11 @@ Item {
                             imageWidth: 24
 
                             onClicked:{
+
+                                if(UserConfig.currentSchedule === scheduleName && CrnPicker.isWorking){
+                                    Utils.notify(notifier, "Stop post requests to delete the schedule", "../../images/svg_images/close_icon.svg", "dark red")
+                                    return
+                                }
 
                                 if(index === UserSchedules.getIndex(UserConfig.currentSchedule)){
                                     UserConfig.currentSchedule = ""

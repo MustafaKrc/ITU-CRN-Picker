@@ -30,10 +30,6 @@ Item {
 
     }
 
-    CrnPicker{
-        id: crnPicker
-    }
-
     LoginPanel{
         id: loginPanel
         width: parent.width/3
@@ -357,7 +353,7 @@ Item {
                         id: requestTimer
                         interval: UserConfig.requestInterval * 1000
                         repeat: true
-                        running: crnPicker.isWorking
+                        running: CrnPicker.isWorking
                         triggeredOnStart: true
                         onTriggered: progressValueAnimation.start()
                     }
@@ -367,7 +363,7 @@ Item {
                         from: 0
                         to: UserConfig.requestInterval
 
-                        running: crnPicker.isWorking
+                        running: CrnPicker.isWorking
 
                         target: requestProgressBar
                         property: "currentValue"
@@ -389,21 +385,21 @@ Item {
                     Layout.row: 9
                     Layout.column: 9
 
-                    text: crnPicker.isWorking ? "Stop Post Requests" : "Start Post Requests"
+                    text: CrnPicker.isWorking ? "Stop Post Requests" : "Start Post Requests"
                     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
                     Layout.preferredHeight: 1
                     Layout.preferredWidth: 1
-                    colorDefault: crnPicker.isWorking ? "#bd0000" : "#009b23"
-                    colorMouseOver: crnPicker.isWorking ? "#f90000" : "#00d22f"
-                    colorPressed: crnPicker.isWorking ? "#bd0000" : "#009b23"
+                    colorDefault: CrnPicker.isWorking ? "#bd0000" : "#009b23"
+                    colorMouseOver: CrnPicker.isWorking ? "#f90000" : "#00d22f"
+                    colorPressed: CrnPicker.isWorking ? "#bd0000" : "#009b23"
 
                     onClicked: {
                         if(UserConfig.currentSchedule === "") return
 
-                        if(crnPicker.isWorking){
-                            crnPicker.stopRequests()
+                        if(CrnPicker.isWorking){
+                            CrnPicker.stopRequests()
                         }else{
-                            crnPicker.startRequests()
+                            CrnPicker.startRequests()
                         }
                     }
                 }
@@ -427,10 +423,10 @@ Item {
         id: requestScheduler
         interval: UserConfig.requestInterval * 1000
         repeat: true
-        running: crnPicker.isWorking
+        running: CrnPicker.isWorking
         triggeredOnStart: true
         onTriggered: {
-            crnPicker.sendRequest()
+            CrnPicker.sendRequest()
         }
 
     }

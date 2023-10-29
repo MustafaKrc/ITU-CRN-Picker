@@ -5,6 +5,7 @@ import "../controls"
 import "../Utils.js" as Utils
 
 import core.UserSchedules 1.0
+import core.CrnPicker 1.0
 
 Item {
 

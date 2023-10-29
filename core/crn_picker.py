@@ -1,7 +1,7 @@
 import requests
 from json import loads
 from .user import UserConfig, UserSchedules
-from PySide6.QtQml import QmlElement
+from PySide6.QtQml import QmlElement, QmlSingleton
 from PySide6.QtCore import QObject, Slot, Signal, Property
 
 QML_IMPORT_NAME = "core.CrnPicker"
@@ -9,6 +9,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 QML_IMPORT_MINOR_VERSION = 0
 
 @QmlElement
+@QmlSingleton
 class CrnPicker(QObject):
     """Handles the post requests and responses
 
@@ -48,7 +49,16 @@ class CrnPicker(QObject):
         },
     }
 
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(CrnPicker, cls).__new__(cls)
+            cls.instance.initialized = False
+        return cls.instance
+
     def __init__(self, parent=None):
+        if (self.initialized):
+            return
+        
         super().__init__(parent)
 
         self.payload = {
