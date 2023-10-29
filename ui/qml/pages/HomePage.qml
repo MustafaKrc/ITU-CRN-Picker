@@ -179,13 +179,15 @@ Item {
                                 interactive: false
 
                                 delegate: Text{
-                                    text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
-                                                                                                   : "Post request is not sent")
+                                    text: (UserConfig.latestResponse[modelData] ? (UserConfig.latestResponse[modelData]["statusCode"] === "0" ? "✔️" : "❌") : "")
+                                          + modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
+                                                                                                     : "Post request is not sent")
                                     color: textColor
                                     font.pixelSize: 20
                                     wrapMode: Text.WordWrap
                                     width: parent.width
                                 }
+
                             }
 
                             Text{
@@ -202,8 +204,9 @@ Item {
                                 interactive: false
 
                                 delegate: Text{
-                                    text: modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
-                                                                                                   : "Post request is not sent")
+                                    text: (UserConfig.latestResponse[modelData] ? (UserConfig.latestResponse[modelData]["statusCode"] === "0" ? "✔️" : "❌") : "")
+                                          + modelData + ": " + (UserConfig.latestResponse[modelData] ? UserConfig.latestResponse[modelData]["message"]
+                                                                                                     : "Post request is not sent")
                                     color: textColor
                                     font.pixelSize: 20
                                     wrapMode: Text.WordWrap
