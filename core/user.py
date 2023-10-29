@@ -56,7 +56,9 @@ class UserSchedules(QObject):
                 # Parse the JSON data
                 json_file = json.load(file)
         except FileNotFoundError:
-            print("File not found: schedules.json")
+            json_file = {}
+            with open("schedules.json", 'w') as file:
+                json.dump(json_file, file)
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
         except Exception as e:
@@ -173,6 +175,29 @@ class UserConfig(QObject):
 
     Other classes can grab/write information."""
 
+    DEFAULT_CONFIG = {
+        "login": {
+            "remember_me": "True",
+            "keep_me_signed_in": "False"
+        },
+        "request": {
+            "request_interval": "5",
+            "max_request_count": "-1",
+            "request_starting_date": "None",
+            "request_ending_date": "None"
+        },
+        "token": {
+            "token_refresh_interval": "3600"
+        },
+        "schedule": {
+            "current_schedule": ""
+        },
+        "about": {
+            "version": "Alpha"
+        }
+    }
+
+
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(UserConfig, cls).__new__(cls)
@@ -189,13 +214,20 @@ class UserConfig(QObject):
 
         try: 
             self.config = configparser.ConfigParser()
-            self.config.read('config.ini')
+            with open('config.ini') as f:
+                self.config.read_file(f)
+            
+        except FileNotFoundError:
+            # If the file doesn't exist, create it with default values
+            self.create_default_config()
         except Exception as e:
             print(f"An error occured: {e}")
 
         
         try:
             load_dotenv(self.dotenv_path)
+            # doesnt matter if file doesnt exists. 
+            # default value is empty string
         except Exception as e:
             print(f"An error occured: {e}")
 
@@ -223,6 +255,21 @@ class UserConfig(QObject):
         self._token_refresh_interval = int(self.config["token"]["token_refresh_interval"])
         self._version = self.config["about"]["version"]
         self._currentSchedule = self.config["schedule"]["current_schedule"]
+
+    def create_default_config(self):
+        self.config = configparser.ConfigParser()
+        for section, options in self.DEFAULT_CONFIG.items():
+            self.config.add_section(section)
+            for option, value in options.items():
+                self.config.set(section, option, value)
+
+        # Save the default configuration to the file
+        try:
+            with open('config.ini', 'w') as configfile:
+                self.config.write(configfile)
+                self.configChanged.emit()
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     @Slot(str, str, result=str)
     def getSetting(self, section, setting):
