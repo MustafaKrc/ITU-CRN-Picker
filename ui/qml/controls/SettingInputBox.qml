@@ -129,24 +129,30 @@ Item{
                 */
 
                 function validate(type, string){
-                    if(string.trim() === "" || string.trim() === "-" || string.trim() === "+") return false;
 
                     if(inputValidator === SettingInputBox.Validator.String){
                         return true;
                     }
-                    else if(inputValidator === SettingInputBox.Validator.Integer){
-                        const integerVal = parseInt(string, 10);
-                        // if string is integer
-                        if(integerVal.toString() === string && Number.isInteger(integerVal)){
-                            return inBounds(integerVal)
-                        }
-                        return false;
-                    }
-                    else if(inputValidator === SettingInputBox.Validator.Double){
-                        if(isNaN(string)) return false;
+                    else{
+                        if(string.trim() === "" || string.trim() === "-" || string.trim() === "+")
+                            return false;
 
-                        return inBounds(parseFloat(string));
+                        if(inputValidator === SettingInputBox.Validator.Integer){
+                            const integerVal = parseInt(string, 10);
+                            // if string is integer
+                            if(integerVal.toString() === string && Number.isInteger(integerVal)){
+                                return inBounds(integerVal)
+                            }
+                            return false;
+                        }
+                        else if(inputValidator === SettingInputBox.Validator.Double){
+                            if(isNaN(string)) return false;
+
+                            return inBounds(parseFloat(string));
+                        }
                     }
+
+
                 }
 
                 function inBounds(value){

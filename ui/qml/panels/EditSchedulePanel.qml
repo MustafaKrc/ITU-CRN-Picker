@@ -159,6 +159,18 @@ Item {
                     }
                 }
             }
+
+            Text {
+                id: crnInfo
+                y: 376
+                text: qsTr("Seperate CRNs with a comma (,)")
+                anchors.left: parent.left
+                anchors.leftMargin: parent.radius
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: parent.radius
+                font.pixelSize: 12
+                color: textColor
+            }
         }
     }
 }
