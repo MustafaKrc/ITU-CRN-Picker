@@ -78,3 +78,5 @@ ui/images/user_photo.png
 config.ini
 core/UserConfig/
 core/__pycache__/
+
+env
