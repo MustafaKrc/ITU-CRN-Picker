@@ -1,5 +1,5 @@
 # ITU-CRN-Picker
-Automatic crn picking app for ITU's kepler website.
+Automatic crn picking application for ITU's kepler website.
 
 ## Table of Contents
 * [General Information](#general-information)
@@ -27,11 +27,15 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
 - Clone this repository to your computer.
 
 ## How to use
-- Login with ITU information.
+- Login with ITU information. 
+![Login Page](github_images/img01.jpg)
 - Create your schedule in `My Schedules`
+![My Schedules Page](github_images/img03.jpg)
 - Change some settings based on your needs in `Settings`
+![Settings Page](github_images/img04.jpg)
 - Press `Start Post Requests` button in `Home`
 - Relevant information about each CRN is displayed in `Home`
+![Home Page](github_images/img02.jpg)
 
 ## Things You Should Know
 - You cannot send request to kepler more frequent than 1 seconds. Kepler system rejects the post request as a protection mechanism. That is why the maximum frequency to send request is set to 1.1 seconds in the source code.

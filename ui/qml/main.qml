@@ -28,7 +28,7 @@ Window {
 
     // properties
 
-    property int windowStatus: Enums.WindowStatus.Normal
+    property int windowStatus: Enums.WindowStatus.Maximized
     property int windowMargin : {
         if(windowStatus === Enums.WindowStatus.Normal){
             3
