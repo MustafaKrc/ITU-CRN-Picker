@@ -188,7 +188,7 @@ Item {
                         }
 
                         TopBarButton{
-                            id: deletSchedule
+                            id: deleteSchedule
                             buttonColorClicked: "#ba0000"
                             buttonIconSource: "../../images/svg_images/delete_icon.svg"
                             radius: 10
@@ -209,10 +209,10 @@ Item {
                                 }
 
                                 UserSchedules.deleteSchedule(index)
+                                Utils.notify(notifier, "Deleted the schedule","../../images/svg_images/check_icon.svg", "dark green")
+
                                 userSchedulesModel.updateModel()
-
                                 UserConfig.currentScheduleChanged()
-
 
                             }
                         }

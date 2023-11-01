@@ -125,7 +125,17 @@ Window {
                     Label {
                         id: labelTopInfo
                         color: "#a4a4a4"
-                        text: qsTr("App description")
+                        text: {
+                            var currentPage = getCurrentPage()
+                            if(currentPage === 0)
+                                return "You can start post requests to pick crn codes from ITU Kepler."
+                            if(currentPage === 1)
+                                return "You can see and manage your schedules here."
+                            if(currentPage === 2)
+                                return "You can change settings here."
+
+                            return "CRN Picker for ITU Kepler."
+                        }
                         anchors.fill: parent
                         verticalAlignment: Text.AlignVCenter
                         font.pointSize: 8
@@ -138,7 +148,18 @@ Window {
                         x: -60
                         y: -35
                         color: "#a4a4a4"
-                        text: qsTr("| HOME")
+                        text: {
+                            var currentPage = getCurrentPage()
+                            if(currentPage === 0)
+                                return "| Home"
+                            if(currentPage === 1)
+                                return "| My Schedules"
+                            if(currentPage === 2)
+                                return "| Settings"
+
+                            return "| "
+                        }
+
                         anchors.left: labelTopInfo.right
                         anchors.right: parent.right
                         anchors.top: parent.top
@@ -425,13 +446,33 @@ Window {
                         x: -60
                         y: -373
                         color: "#a4a4a4"
-                        text: qsTr("App description")
+                        text: qsTr("CRN Picker for ITU Kepler.")
                         anchors.fill: parent
                         verticalAlignment: Text.AlignVCenter
                         anchors.leftMargin: 10
                         anchors.rightMargin: 30
                         font.pointSize: 8
                     }
+
+                    Label {
+                        id: labelTopInfo2
+                        x: -60
+                        y: -35
+                        color: "#a4a4a4"
+                        text: "Made with ♥ by @MustafaKrc"
+
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        horizontalAlignment: Text.AlignRight
+                        verticalAlignment: Text.AlignVCenter
+                        font.pointSize: 8
+                        anchors.bottomMargin: 0
+                        anchors.topMargin: 0
+                        anchors.leftMargin: 0
+                        anchors.rightMargin: 25
+                    }
+
                     MouseArea {
                         id: resizeBottomRight
                         width: 25
@@ -462,6 +503,15 @@ Window {
                 }
             }
         }
+    }
+
+    function getCurrentPage(){
+        if(activeMenuButton == buttonHome)
+            return 0
+        if(activeMenuButton == buttonMySchedules)
+            return 1
+        if(activeMenuButton == buttonSettings)
+            return 2
     }
 
     DropShadow{
