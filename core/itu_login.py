@@ -27,10 +27,27 @@ class ItuLogin(QObject):
     """Handles the logging into ITU systems.
 
     Simulates chrome web browser to grab the authorization token.
-
     Grabs the username and password from UserConfig
+    This class will install chrome web driver for selenium when it is necessary.
+    
+    Attributes:
+        driver: Selenium webdriver object
+        connectionChecker: InternetConnectionChecker object
+        driver_restore_scheduler: scheduler object to restore the driver when it is closed
+        options: Selenium webdriver options
+        __service: Selenium webdriver service
 
-    This class will install chrome web driver for selenium when it is necessary."""
+    Methods:
+        login: Logs into ITU system
+        logout: Logs out of ITU system
+        setAuthToken: Sets the authorization token in UserConfig
+        refreshAuthToken: Gets a new authorization token
+        isLoggedIn: Checks if user is logged in ITU system
+        getLoginInfo: Gets the user's name and photo
+        tryRestoreConnection: Tries to restore the connection when it is lost
+        close: Closes the webdriver
+
+    """
 
     def __init__(self, parent = None):
         QObject.__init__(self, parent)
@@ -53,6 +70,7 @@ class ItuLogin(QObject):
 
 
     def tryRestoreConnection(self):
+        """Tries to restore the connection when it is lost"""
         try:
             self.driver = webdriver.Chrome(service=self.__service, options= self.options)
         except NoSuchDriverException:
@@ -63,6 +81,8 @@ class ItuLogin(QObject):
     
     @Slot()
     def close(self):
+        """Closes the webdriver"""
+
         if not self.connectionChecker.isOnline():
             return
         
@@ -70,9 +90,7 @@ class ItuLogin(QObject):
 
     @Slot(str, str, result = list)
     def login(self, user_name, password):
-        """Logs into ITU system.
-
-        After logging, calls another method to grab the authorization token from responses."""
+        """Logs into ITU system"""
         
         if not self.connectionChecker.isOnline():
             return [False, "Error with internet connection"]
@@ -106,6 +124,8 @@ class ItuLogin(QObject):
     
     @Slot(result = list)
     def logout(self):
+        """Logs out of ITU system"""
+
         if not self.connectionChecker.isOnline():
             return [False, "Error with internet connection"]
         
@@ -119,9 +139,8 @@ class ItuLogin(QObject):
             
 
     def setAuthToken(self):
-        """Grabs the authorization token from the given requests
+        """Gets new authorization token and sets it in UserConfig"""
 
-        Also sets the authorization token in UserConfig"""
         if not self.connectionChecker.isOnline():
             return
         
@@ -136,7 +155,7 @@ class ItuLogin(QObject):
     def refreshAuthToken(self):
         """Gets a new authorization token.
 
-        Calls another method to grab the authorization token from responses."""
+        Calls another method to grab the authorization token from website."""
         if not self.connectionChecker.isOnline():
             return
         
@@ -149,6 +168,7 @@ class ItuLogin(QObject):
     @Slot(result = bool)
     def isLoggedIn(self):
         """Checks if user is logged in ITU system"""
+
         if not self.connectionChecker.isOnline():
             return False
         
@@ -156,6 +176,8 @@ class ItuLogin(QObject):
         return self.driver.title == "Öğrenci Bilgi Sistemi"
     
     def getLoginInfo(self):
+        """Gets the user's name and photo"""
+
         if not self.connectionChecker.isOnline():
             return
 

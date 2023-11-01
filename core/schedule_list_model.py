@@ -5,6 +5,9 @@ from .user import UserSchedules
 
 
 class ScheduleListModel(QAbstractListModel):
+    """Model for the schedule list in the main page"""
+
+
     NameRole = Qt.UserRole + 1
     ECRNRole = Qt.UserRole + 2
     SCRNRole = Qt.UserRole + 3

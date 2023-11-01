@@ -11,12 +11,21 @@ QML_IMPORT_MINOR_VERSION = 0
 @QmlElement
 @QmlSingleton
 class CrnPicker(QObject):
-    """Handles the post requests and responses
+    """Sends CRN picking/dropping requests to Kepler.
+    
+    Attributes:
+        payload: payload for the request
+        headers: headers for the request
+        return_values: return values from Kepler
 
-    Grabs these informations from UserConfig:
-    - ECRN (list of crns to be picked)
-    - SCRN (list of crns to be dropped)
-    - Authorization token"""
+    Methods:
+        startRequests: Starts sending requests
+        stopRequests: Stops sending requests
+        sendRequest: Sends request for CRN picking/dropping
+        updateAuthToken: Updates the authorization token in the headers
+        identifyResponse: Identifies the response from Kepler
+
+    """
 
     # Error codes from Kepler
     return_values = {
@@ -94,6 +103,8 @@ class CrnPicker(QObject):
 
     @Slot()
     def startRequests(self):
+        """Starts sending requests for CRN picking/dropping."""
+
         config = UserConfig()
 
         #config.latest_response.clear()
@@ -115,11 +126,11 @@ class CrnPicker(QObject):
 
     @Slot()
     def sendRequest(self):
-        """Sends request ford CRN picking/dropping.
+        """Sends request for CRN picking/dropping.
+        
+        The response is identified in another method called from here.
 
-        Grabs the latest auth token before sending the request.
-
-        Returns the response."""
+        """
 
         config = UserConfig()
 

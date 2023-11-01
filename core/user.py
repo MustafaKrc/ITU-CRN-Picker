@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject, Slot, Signal, Property
 
 @dataclass
 class Schedule:
+    """Dataclass for schedules."""
 
     def __init__(self, name="Schedule", ECRN=[], SCRN=[]):
         self.name = name
@@ -19,6 +20,7 @@ class Schedule:
 
     @staticmethod
     def isValidCRNList(crnList):
+        """Checks if the given CRN list is valid or not."""
         for crn in crnList:
             if not crn.isdigit():  # isdigit will reject negative numbers
                 return False
@@ -34,6 +36,24 @@ QML_IMPORT_MINOR_VERSION = 0
 @QmlElement
 @QmlSingleton
 class UserSchedules(QObject):
+    """Class for user schedules.
+    
+    All the schedules are stored in a JSON file.
+    
+    Attributes:
+        schedules: list of Schedule objects
+
+    Methods:
+        getIndex: Returns the index of the schedule with the given name
+        getName: Returns the name of the schedule with the given index
+        getECRNList: Returns the ECRN list of the schedule with the given index
+        getSCRNList: Returns the SCRN list of the schedule with the given index
+        addSchedule: Adds a new schedule
+        editSchedule: Edits the schedule with the given index
+        deleteSchedule: Deletes the schedule with the given index
+        saveSchedules: Saves the schedules to the JSON file
+    
+    """
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -93,6 +113,7 @@ class UserSchedules(QObject):
 
     @Slot(str, list, list, result=list)
     def addSchedule(self, name, ECRNList, SCRNList):
+        """Adds a new schedule."""
 
         if name == "":
             return [False, "Schedule must have a name"]
@@ -113,6 +134,7 @@ class UserSchedules(QObject):
 
     @Slot(int, str, list, list, result=list)
     def editSchedule(self, scheduleIndex, newName, newECRNList, newSCRNList):
+        """Edits the schedule with the given index."""
 
         currentSchedule = self.schedules[scheduleIndex]
 
@@ -139,12 +161,15 @@ class UserSchedules(QObject):
 
     @Slot(int, result=list)
     def deleteSchedule(self, scheduleIndex):
+        """Deletes the schedule with the given index."""
 
         self.schedules.pop(scheduleIndex)
         self.saveSchedules()
         return [True, "Schedule is successfully removed."]
 
     def saveSchedules(self):
+        """Saves the schedules to the JSON file."""
+
         data = {}
         for schedule in self.schedules:
             data[schedule.name] = {
@@ -169,11 +194,31 @@ QML_IMPORT_MINOR_VERSION = 0
 @QmlElement
 @QmlSingleton
 class UserConfig(QObject):
-    """Class for user settings and information.
-
-    Grabs all the information from .env file
-
-    Other classes can grab/write information."""
+    """Class for user config.
+    
+    All the settings are stored in a INI file.
+    
+    Attributes:
+        _username: ITU username
+        _password: ITU password
+        last_username: last ITU username (used for remember me and keep me signed in)
+        last_password: last ITU password (used for remember me and keep me signed in)
+        full_name: full name of the user
+        auth_token: authorization token
+        request_count: number of requests made
+        latest_response: latest response from the server
+        _rememberMe: True if remember me is checked, False otherwise
+        _keepMeSignedIn: True if keep me signed in is checked, False otherwise
+        _requestInterval: interval between the requests
+        _maxRequestCount: maximum number of requests
+        _token_refresh_interval: interval between the token refreshes
+        _version: version of the application
+        _currentSchedule: name of the current schedule
+        
+        Methods:
+        create_default_config: Creates the default configuration file
+        
+        """
 
     DEFAULT_CONFIG = {
         "login": {
@@ -258,6 +303,11 @@ class UserConfig(QObject):
         self._currentSchedule = self.config["schedule"]["current_schedule"]
 
     def create_default_config(self):
+        """Creates the default configuration file if .ini file doesn't exist.
+
+        The default configuration is stored in DEFAULT_CONFIG attribute.
+        """
+
         self.config = configparser.ConfigParser()
         for section, options in self.DEFAULT_CONFIG.items():
             self.config.add_section(section)
@@ -274,10 +324,14 @@ class UserConfig(QObject):
 
     @Slot(str, str, result=str)
     def getSetting(self, section, setting):
+        """Returns the value of the given setting in the given section."""
+
         # this function will not provide binding in qml
         return self.config[section][setting]
 
     def saveConfig(self):
+        """Saves the configuration to the file."""
+        
         try:
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)

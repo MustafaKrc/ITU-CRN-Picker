@@ -2,7 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 
-// belki kendi validatorunu yap...
 
 Item{
     id: setting
