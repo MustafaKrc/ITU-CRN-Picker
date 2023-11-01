@@ -199,7 +199,7 @@ Window {
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        source: "../images/svg_images/app_logo.png"
+                        source: "../images/svg_images/app_logo.svg"
                         anchors.leftMargin: 5
                         anchors.bottomMargin: 0
                         anchors.topMargin: 0
