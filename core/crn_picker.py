@@ -1,15 +1,31 @@
 import requests
 from json import loads
-from .user_config import UserConfig
+from .user import UserConfig, UserSchedules
+from PySide6.QtQml import QmlElement, QmlSingleton
+from PySide6.QtCore import QObject, Slot, Signal, Property
 
+QML_IMPORT_NAME = "core.CrnPicker"
+QML_IMPORT_MAJOR_VERSION = 1
+QML_IMPORT_MINOR_VERSION = 0
 
-class CrnPicker:
-    """Handles the post requests and responses
+@QmlElement
+@QmlSingleton
+class CrnPicker(QObject):
+    """Sends CRN picking/dropping requests to Kepler.
+    
+    Attributes:
+        payload: payload for the request
+        headers: headers for the request
+        return_values: return values from Kepler
 
-    Grabs these informations from UserConfig:
-    - ECRN (list of crns to be picked)
-    - SCRN (list of crns to be dropped)
-    - Authorization token"""
+    Methods:
+        startRequests: Starts sending requests
+        stopRequests: Stops sending requests
+        sendRequest: Sends request for CRN picking/dropping
+        updateAuthToken: Updates the authorization token in the headers
+        identifyResponse: Identifies the response from Kepler
+
+    """
 
     # Error codes from Kepler
     return_values = {
@@ -42,39 +58,103 @@ class CrnPicker:
         },
     }
 
-    def __init__(self):
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(CrnPicker, cls).__new__(cls)
+            cls.instance.initialized = False
+        return cls.instance
+
+    def __init__(self, parent=None):
+        if (self.initialized):
+            return
+        
+        super().__init__(parent)
+
         self.payload = {
-            "ECRN": UserConfig.ECRN,
-            "SCRN": UserConfig.SCRN,
+            "ECRN": [],
+            "SCRN": [],
         }
         self.headers = {
             "authority": "kepler-beta.itu.edu.tr",
             "method": "POST",
             "path": "/api/ders-kayit/v21",
             "scheme": "https",
-            "authorization": UserConfig.auth_token,
+            "authorization": UserConfig().auth_token,
         }
 
+        self._is_working = False
+
+
+    # latestResponse qml property
+
+    def getIsWorking(self):
+        return self._is_working
+
+    def setIsWorking(self, value):
+        self._is_working = value
+        self.isWorkingChanged.emit()
+
+    @Signal
+    def isWorkingChanged(self):
+        pass
+
+    isWorking = Property(bool, getIsWorking,
+                          setIsWorking, notify=isWorkingChanged)
+
+    @Slot()
+    def startRequests(self):
+        """Starts sending requests for CRN picking/dropping."""
+
+        config = UserConfig()
+
+        #config.latest_response.clear()
+        #config.latestResponseChanged.emit()
+
+
+        schedules = UserSchedules()
+        current_schedule_name = config.getCurrentSchedule()
+        current_schedule_index = schedules.getIndex(current_schedule_name)
+
+        self.payload["ECRN"] = [str(schedule) for schedule in schedules.getECRNList(current_schedule_index)]
+        self.payload["SCRN"] = [str(schedule) for schedule in schedules.getSCRNList(current_schedule_index)]
+
+        self.setIsWorking(True)
+
+    @Slot()
+    def stopRequests(self):
+        self.setIsWorking(False)
+
+    @Slot()
     def sendRequest(self):
-        """Sends request ford CRN picking/dropping.
+        """Sends request for CRN picking/dropping.
+        
+        The response is identified in another method called from here.
 
-        Grabs the latest auth token before sending the request.
+        """
 
-        Calls another method to identfy the response."""
+        config = UserConfig()
+
+        if config.getMaxRequestCount() != -1 and config.getRequestCount() >= config.getMaxRequestCount():
+            self.setIsWorking(False)
+            return
+
+
         self.updateAuthToken()
         response = requests.post(
             "https://kepler-beta.itu.edu.tr/api/ders-kayit/v21",
             headers=self.headers,
             json=self.payload,
         )
-        UserConfig.request_count += 1
+
+        config.setRequestCount(config.getRequestCount() + 1)
         self.identifyResponse(response)
 
     def updateAuthToken(self):
         """Grabs the latest authorization token from the UserConfig"""
-        self.headers["authorization"] = UserConfig.auth_token
+        self.headers["authorization"] = UserConfig().auth_token
 
-    def identifyResponse(self, response) -> list[str]:
+    @Slot()
+    def identifyResponse(self, response):
         """Identifies the response.
 
         If CRN operation was unsuccessfull:
@@ -83,38 +163,35 @@ class CrnPicker:
         If CRN operation was successfull:
         - Updates the UserConfig.latest_response as successfull.
         - Removes the CRN from the ECRN or SCRN list. (from the one that it belongs)"""
-        json = loads(response.content)
+        response_content = response.json()
 
-        for element in json["ecrnResultList"]:
-            UserConfig.latest_response.update(
+        for element in response_content["ecrnResultList"]:
+            UserConfig().latest_response.update(
                 {
                     element["crn"]: {
                         "type": "ECRN",
                         "statusCode": str(element["statusCode"]),
-                        "message": f'The course with CRN { element["crn"]} has been successfully added.'
-                        if str(element["statusCode"]) == "0"
-                        else self.return_values["label"][element["resultCode"]].format(
-                            element["crn"]
-                        ),
+                        "message": f'The course with CRN { element["crn"]} has been successfully added.' if str(element["statusCode"]) == "0"
+                                    else self.return_values["label"][element["resultCode"]].format(element["crn"]),
                     }
                 }
             )
             if str(element["statusCode"]) == "0":
-                UserConfig.ECRN.remove(element["crn"])
+                self.payload["ECRN"].remove(element["crn"])
 
-        for element in json["scrnResultList"]:
-            UserConfig.latest_response.update(
+        for element in response_content["scrnResultList"]:
+            UserConfig().latest_response.update(
                 {
                     element["crn"]: {
                         "type": "SCRN",
                         "statusCode": str(element["statusCode"]),
-                        "message": f'The course with CRN { element["crn"]} has been successfully dropped.'
-                        if str(element["statusCode"]) == "0"
-                        else self.return_values["label"][element["resultCode"]].format(
-                            element["crn"]
-                        ),
+                        "message": f'The course with CRN { element["crn"]} has been successfully dropped.' if str(element["statusCode"]) == "0"
+                        else self.return_values["label"][element["resultCode"]].format(element["crn"]),
                     }
                 }
             )
             if str(element["statusCode"]) == "0":
-                UserConfig.SCRN.remove(element["crn"])
+                self.payload["SCRN"].remove(element["crn"])
+
+        UserConfig().latestResponseChanged.emit()
+
