@@ -13,14 +13,15 @@ import "./Utils.js" as Utils
 
 Window {
     id: mainWindow
-    width: 640
-    height: 480
+    width: 1280
+    height: 720
     minimumWidth: 640
     minimumHeight: 480
 
     // remove title bar
     flags: Qt.Window | Qt.FramelessWindowHint
-
+    
+    visibility: "Maximized"
     visible: true
     color: "#002a2a2a"
     title: qsTr("ITU Crn Picker")

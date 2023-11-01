@@ -193,7 +193,7 @@ class UserConfig(QObject):
             "current_schedule": ""
         },
         "about": {
-            "version": "Alpha"
+            "version": "0.1"
         }
     }
 
@@ -253,7 +253,8 @@ class UserConfig(QObject):
         self._requestInterval = float(self.config["request"]["request_interval"])
         self._maxRequestCount = int(self.config["request"]["max_request_count"])
         self._token_refresh_interval = int(self.config["token"]["token_refresh_interval"])
-        self._version = self.config["about"]["version"]
+        self._version = self.DEFAULT_CONFIG["about"]["version"] # version is present in default config
+        self.config["about"]["version"] = self._version # set version to default value
         self._currentSchedule = self.config["schedule"]["current_schedule"]
 
     def create_default_config(self):
