@@ -39,7 +39,7 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
 
 ## Things You Should Know
 - You cannot send request to kepler more frequent than 1 seconds. Kepler system rejects the post request as a protection mechanism. That is why the maximum frequency to send request is set to 1.1 seconds in the source code.
-- This app installs latest web driver for Chrome web browser when it is necessary. You can check how it works from [here](https://github.com/SergeyPirogov/webdriver_manager).
+- This app installs latest web driver for Chrome web browser when it is necessary. It is expected to take some time for download during first time start.
 
 ## Room for Improvement
 - Schedule creation can be more interactive. User can select offered courses from drop-down menus using [this](https://github.com/itu-helper/data-updater) api.
