@@ -1,5 +1,5 @@
 # ITU-CRN-Picker
-Automatic crn picking application for ITU's kepler website.
+Automatic CRN picking application for ITU's kepler website.
 
 ## Table of Contents
 * [General Information](#general-information)
@@ -25,6 +25,7 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
     >> It is recommended to use virtual environment.
     
 - Clone this repository to your computer.
+- Run `main.py`.
 
 ## How to use
 - Login with ITU information. 
@@ -44,11 +45,14 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
 ## Room for Improvement
 - Schedule creation can be more interactive. User can select offered courses from drop-down menus using [this](https://github.com/itu-helper/data-updater) api.
 
-> Feel free to report any bugs you encounter in this repository's issues page.
+> Feel free to contribute to the project or report any bugs you encounter in this repository's issues page.
 
 ## Releases
 
-Further releases will be listed here.
+- [Version 1.0.0 (January 2024)](https://github.com/MustafaKrc/ITU-CRN-Picker/releases/tag/v0.1)
+  - Introduces GUI layer for improved user experience.
+  - Available executables for Windows and Linux.
+  - Backend enhancements from the CLI version.
 
 ## License
 This project is open source and available under the [GPLv3 License](./LICENSE).
