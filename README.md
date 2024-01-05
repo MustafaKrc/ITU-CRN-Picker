@@ -21,7 +21,7 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
     - python-dotenv
     - requests
     - urrlib
-    > You can use this command to install them in cmd via pip:<br />`pip install requirements.txt`
+    > You can use this command to install them in cmd via pip:<br />`pip install -r requirements.txt`
     >> It is recommended to use virtual environment.
     
 - Clone this repository to your computer.

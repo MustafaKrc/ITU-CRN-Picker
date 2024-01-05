@@ -71,7 +71,7 @@ Item {
                 SettingInputBox{
                     id: ecrnSetting
                     spacing: 15
-                    settingText: "Course CRNs to be Picked:"
+                    settingText: "Course CRNs to be picked:"
                     inputColorDefault: panelSecondaryColor
                     inputTextMaxSize: 20
                     inputSelectionColor: inputSelectionColor
