@@ -1,9 +1,12 @@
 import configparser
 import json
 from dotenv import load_dotenv, set_key
-from os.path import join, dirname
+from os.path import join, dirname, exists
 from os import getenv
+from os.path import join, dirname, abspath
 from dataclasses import dataclass
+
+import sys
 
 from PySide6.QtQml import QmlElement, QmlSingleton
 from PySide6.QtCore import QObject, Slot, Signal, Property
@@ -254,7 +257,22 @@ class UserConfig(QObject):
             return
 
         self.initialized = True
-        self.dotenv_path = join(dirname(dirname(__file__)), ".env")
+        
+
+        # Use the regular file path
+        base_path = abspath(".")
+
+        self.dotenv_path = join(base_path, '.env')
+
+        if not exists(self.dotenv_path):
+            # Create the file if it doesn't exist
+            with open(self.dotenv_path, 'w') as f:
+                f.write("")
+
+        # Load the file as a dotenv file
+        load_dotenv(self.dotenv_path)
+
+
         super().__init__(parent)
 
         try: 

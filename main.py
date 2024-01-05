@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 #from core.itu_login import ItuLogin
@@ -13,6 +13,8 @@ from core.crn_picker import CrnPicker
 from core.internet_checker import InternetConnectionChecker
 from core.schedule_list_model import ScheduleListModel
 
+from os.path import abspath, join
+
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
@@ -22,6 +24,19 @@ if __name__ == "__main__":
     userSchedulesModel = ScheduleListModel()
     engine.rootContext().setContextProperty("userSchedulesModel", userSchedulesModel)
 
+
+    # Get the path to the temporary folder created by PyInstaller
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        # PyInstaller bundles files, use the temporary folder
+        base_path = sys._MEIPASS
+    else:
+        # Use the regular file path
+        base_path = abspath(".")
+
+    # Set the application icon
+    icon_path = join(base_path, 'ui', 'images', 'icon.png')
+    app_icon = QIcon(icon_path)
+    app.setWindowIcon(app_icon)
 
     #qmlRegisterType(ItuLogin, 'ItuLogin', 1, 0, 'ItuLogin')
 

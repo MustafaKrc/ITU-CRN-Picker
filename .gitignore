@@ -73,7 +73,7 @@ CMakeLists.txt.user*
 *.exe
 
 *.pyc
-ui/images/user_photo.png
+user_photo.png
 config.ini
 core/UserConfig/
 core/__pycache__/

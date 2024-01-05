@@ -114,7 +114,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 source: {
                     if(UserConfig.rememberMe || isLoggedIn){
-                        "../../images/user_photo.png"
+                        Utils.getScriptPath() + "/user_photo.png"
                     }else{
                         "../../images/svg_images/guest_icon.svg"
                     }
@@ -149,7 +149,7 @@ Rectangle {
                         errorCount += 1;
                         if (errorCount === 1) {
                             image.source = ""  // Gotta clear the source
-                            image.source = "../../images/user_photo.png";
+                            image.source = Utils.getScriptPath() + "/user_photo.png";
                         } else {
                             image.source = "../../images/svg_images/guest_icon.svg";
                         }
@@ -452,7 +452,7 @@ Rectangle {
         opacity: 0
         source: {
             if(UserConfig.rememberMe || isLoggedIn){
-                "../../images/user_photo.png"
+                Utils.getScriptPath() + "/user_photo.png"
             }else{
                 "../../images/svg_images/guest_icon.svg"
             }
@@ -490,7 +490,7 @@ Rectangle {
                 errorCount += 1;
                 if (errorCount === 1) {
                     image.source = ""  // Gotta clear the source
-                    image.source = "../../images/user_photo.png";
+                    image.source = Utils.getScriptPath() + "/user_photo.png";
                 } else {
                     image.source = "../../images/svg_images/guest_icon.svg";
                 }

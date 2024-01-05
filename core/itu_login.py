@@ -193,7 +193,7 @@ class ItuLogin(QObject):
 
             UserConfig().setFullName(img_info)
 
-            fullfilename = join("./ui/images", "user_photo.png")
+            fullfilename = "user_photo.png"
             urllib.request.urlretrieve(img_src, fullfilename)
 
 
