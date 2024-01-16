@@ -11,7 +11,3 @@ function secondsToDate(seconds){
 
     return new Date(seconds * 1000).toISOString().substring(11, 19)
 }
-
-function getScriptPath() {
-    return Qt.resolvedUrl(".")
-}
