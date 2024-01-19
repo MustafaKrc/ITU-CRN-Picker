@@ -66,9 +66,10 @@ class ItuLogin(QObject):
             self.driver = webdriver.Chrome(service=self.__service, options= self.options)
         except NoSuchDriverException:
             self.driver = None
+    
+    def __del__(self):
+            self.close()
             
-
-
     def tryRestoreConnection(self):
         """Tries to restore the connection when it is lost"""
         try:
@@ -82,7 +83,6 @@ class ItuLogin(QObject):
     @Slot()
     def close(self):
         """Closes the webdriver"""
-
         if not self.connectionChecker.isOnline():
             return
         

@@ -6,6 +6,7 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 
 class Encryption:
+    """Provides functions for encrypting and decrypting values"""
     def __init__(self):
         # Generate a unique identifier for the computer
         unique_id = uuid.getnode()
@@ -19,6 +20,7 @@ class Encryption:
         self.key = key.finalize()[:16]
 
     def encrypt_value(self, value):
+        """Encrypts a value with AES-128 and returns the encrypted value as a base64-encoded string"""
         
         if value == None:
             return ""
@@ -38,6 +40,7 @@ class Encryption:
         return base64.b64encode(encrypted_value).decode()
 
     def decrypt_value(self, encrypted_value):
+        """Decrypts a value that was encrypted with the encrypt_value function"""
 
         if encrypted_value == None:
             return ""

@@ -77,7 +77,18 @@ class UserSchedules(QObject):
                 # Parse the JSON data
                 json_file = json.load(file)
         except FileNotFoundError:
-            json_file = {}
+            json_file = {
+                        "Sample Schedule": {
+                            "ECRN": [
+                                11111,
+                                22222
+                            ],
+                            "SCRN": [
+                                88888,
+                                99999
+                            ]
+                        }
+                    }
             with open("schedules.json", 'w') as file:
                 json.dump(json_file, file)
         except json.JSONDecodeError as e:

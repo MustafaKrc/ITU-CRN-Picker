@@ -36,6 +36,13 @@ Rectangle {
         }
     }
 
+    Component.onDestruction: {
+        if(ituLogin !== undefined || ituLogin !== null){
+            ituLogin.close()
+            }
+        
+    }
+
 
 
     enum CompactMode{
