@@ -14,6 +14,16 @@ Automatic CRN picking application for ITU's kepler website.
 This is an automated app to pick or drop CRNs from Istanbul Technical University's student information system (aka. kepler) website.
 
 ## How to Install
+
+You can either run the release executable or build this repository on your system.
+
+### Run executable
+
+- Simply download the release and run the executable.
+
+### Build from source code
+
+
 - You need to have **Python 3.\*** and **Google Chrome web browser** (preferably latest version) installed in your system.
 - Following 3rd party libraries are needed:
     - PySide6
@@ -27,7 +37,7 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
 - Clone this repository to your computer.
 - Run `main.py`.
 
-## How to use
+## How to use the application
 - Login with ITU information. 
 ![Login Page](github_images/img01.jpg)
 - Create your schedule in `My Schedules`
@@ -49,7 +59,13 @@ This is an automated app to pick or drop CRNs from Istanbul Technical University
 
 ## Releases
 
-- [Version 1.0.0 (January 2024)](https://github.com/MustafaKrc/ITU-CRN-Picker/releases/tag/v0.1)
+- [Version 0.1.1 (January 2024)](https://github.com/MustafaKrc/ITU-CRN-Picker/releases/tag/v0.1.1)
+  - Now username and password are encrypted properly.
+  - Fixed user photo not showing properly.
+  - Fixed webdriver not closing up properly.
+  - Fixed slow closing.
+
+- [Version 0.1 (January 2024)](https://github.com/MustafaKrc/ITU-CRN-Picker/releases/tag/v0.1)
   - Introduces GUI layer for improved user experience.
   - Available executables for Windows and Linux.
   - Backend enhancements from the CLI version.
