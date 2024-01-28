@@ -12,11 +12,13 @@ from os.path import join
 import sched
 from time import time, sleep
 
+from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QmlElement
 from PySide6.QtCore import QObject, Slot, Signal
 
 from .user import UserConfig
 from .internet_checker import InternetConnectionChecker
+
 
 QML_IMPORT_NAME = "core.ItuLogin"
 QML_IMPORT_MAJOR_VERSION = 1
@@ -66,6 +68,10 @@ class ItuLogin(QObject):
             self.driver = webdriver.Chrome(service=self.__service, options= self.options)
         except NoSuchDriverException:
             self.driver = None
+        
+        # When the GUI is closed, close the webdriver
+        windowInstance = QGuiApplication.instance()
+        windowInstance.aboutToQuit.connect(self.close)
     
     def __del__(self):
             self.close()
@@ -83,10 +89,10 @@ class ItuLogin(QObject):
     @Slot()
     def close(self):
         """Closes the webdriver"""
-        if not self.connectionChecker.isOnline():
-            return
-        
-        self.driver.quit()
+
+        if self.driver is not None:
+            self.driver.quit()  
+            self.driver = None
 
     @Slot(str, str, result = list)
     def login(self, user_name, password):
