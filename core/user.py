@@ -1,16 +1,14 @@
 import configparser
 import json
 from dotenv import load_dotenv, set_key
-from os.path import join, dirname, exists
+from os.path import join, dirname, exists, abspath
 from os import getenv
-from os.path import join, dirname, abspath
 from dataclasses import dataclass
-
-import sys
 
 from PySide6.QtQml import QmlElement, QmlSingleton
 from PySide6.QtCore import QObject, Slot, Signal, Property
 
+from core.encryption import Encryption
 
 @dataclass
 class Schedule:
@@ -79,7 +77,18 @@ class UserSchedules(QObject):
                 # Parse the JSON data
                 json_file = json.load(file)
         except FileNotFoundError:
-            json_file = {}
+            json_file = {
+                        "Sample Schedule": {
+                            "ECRN": [
+                                11111,
+                                22222
+                            ],
+                            "SCRN": [
+                                88888,
+                                99999
+                            ]
+                        }
+                    }
             with open("schedules.json", 'w') as file:
                 json.dump(json_file, file)
         except json.JSONDecodeError as e:
@@ -241,7 +250,7 @@ class UserConfig(QObject):
             "current_schedule": ""
         },
         "about": {
-            "version": "0.1"
+            "version": "0.1.1"
         }
     }
 
@@ -257,7 +266,8 @@ class UserConfig(QObject):
             return
 
         self.initialized = True
-        
+
+        self.encryptor = Encryption()
 
         # Use the regular file path
         base_path = abspath(".")
@@ -267,7 +277,7 @@ class UserConfig(QObject):
         if not exists(self.dotenv_path):
             # Create the file if it doesn't exist
             with open(self.dotenv_path, 'w') as f:
-                f.write("")
+                f.write("# Never Share this File\n")
 
         # Load the file as a dotenv file
         load_dotenv(self.dotenv_path)
@@ -289,13 +299,11 @@ class UserConfig(QObject):
         
         try:
             load_dotenv(self.dotenv_path)
-            # doesnt matter if file doesnt exists. 
-            # default value is empty string
         except Exception as e:
             print(f"An error occured: {e}")
 
-        self._username = getenv("ITUusername")
-        self._password = getenv("ITUpassword")
+        self._username = self.encryptor.decrypt_value(getenv("ITUusername"))
+        self._password = self.encryptor.decrypt_value(getenv("ITUpassword"))
 
         self._username = self._username if self._username != "" else None
         self._password = self._password if self._password != "" else None
@@ -374,6 +382,7 @@ class UserConfig(QObject):
     
     fullName = Property(str, getFullName, 
                         setFullName, notify=fullNameChanged)
+
     
     # username qml property
 
@@ -382,7 +391,8 @@ class UserConfig(QObject):
 
     def setUsername(self, value):
         self._username = value
-        set_key(self.dotenv_path,"ITUusername",value)
+        encrypted_value = self.encryptor.encrypt_value(value)
+        set_key(self.dotenv_path, "ITUusername", encrypted_value)
         self.usernameChanged.emit()
 
     @Signal
@@ -399,7 +409,8 @@ class UserConfig(QObject):
 
     def setPassword(self, value):
         self._password = value
-        set_key(self.dotenv_path,"ITUpassword",value)
+        encrypted_value = self.encryptor.encrypt_value(value)
+        set_key(self.dotenv_path,"ITUpassword", encrypted_value)
         self.passwordChanged.emit()
 
     @Signal

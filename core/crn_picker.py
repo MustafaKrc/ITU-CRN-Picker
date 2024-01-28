@@ -55,6 +55,7 @@ class CrnPicker(QObject):
             "CRNListEmpty": "The course with CRN {} is not available during the course selection period.",
             "CRNNotFound": "The course with CRN {} is not available during the course selection period.",
             "ERRLoad": "This service is temporarily unavailable.",
+            "NULLParam-CheckOgrenciKayitZamaniKontrolu" : "The course with CRN {} cannot be added due to 'Enrollment Time Hold'.",
         },
     }
 
