@@ -238,7 +238,7 @@ class UserConfig(QObject):
             "keep_me_signed_in": "False"
         },
         "request": {
-            "request_interval": "5",
+            "request_interval": "1.1",
             "max_request_count": "-1",
             "request_starting_date": "None",
             "request_ending_date": "None"
@@ -287,7 +287,7 @@ class UserConfig(QObject):
 
         try: 
             self.config = configparser.ConfigParser()
-            with open('config.ini') as f:
+            with open('config.ini', encoding='utf-8') as f:
                 self.config.read_file(f)
             
         except FileNotFoundError:
@@ -342,7 +342,7 @@ class UserConfig(QObject):
 
         # Save the default configuration to the file
         try:
-            with open('config.ini', 'w') as configfile:
+            with open('config.ini', 'w', encoding='utf-8') as configfile:
                 self.config.write(configfile)
                 self.configChanged.emit()
         except Exception as e:
@@ -359,7 +359,7 @@ class UserConfig(QObject):
         """Saves the configuration to the file."""
         
         try:
-            with open('config.ini', 'w') as configfile:
+            with open('config.ini', 'w', encoding='utf-8') as configfile:
                 self.config.write(configfile)
                 self.configChanged.emit()
         except Exception as e:
