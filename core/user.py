@@ -73,7 +73,7 @@ class UserSchedules(QObject):
 
         try:
             # Open the JSON file for reading
-            with open("schedules.json", 'r') as file:
+            with open("schedules.json", 'r', encoding='utf-8') as file:
                 # Parse the JSON data
                 json_file = json.load(file)
         except FileNotFoundError:
@@ -89,7 +89,7 @@ class UserSchedules(QObject):
                             ]
                         }
                     }
-            with open("schedules.json", 'w') as file:
+            with open("schedules.json", 'w', encoding='utf-8') as file:
                 json.dump(json_file, file)
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
@@ -192,7 +192,7 @@ class UserSchedules(QObject):
         jsonObject = json.dumps(data, indent=4)
 
         try:
-            with open("schedules.json", "w") as file:
+            with open("schedules.json", "w", encoding='utf-8') as file:
                 file.write(jsonObject)
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -276,7 +276,7 @@ class UserConfig(QObject):
 
         if not exists(self.dotenv_path):
             # Create the file if it doesn't exist
-            with open(self.dotenv_path, 'w') as f:
+            with open(self.dotenv_path, 'w', encoding='utf-8') as f:
                 f.write("# Never Share this File\n")
 
         # Load the file as a dotenv file
