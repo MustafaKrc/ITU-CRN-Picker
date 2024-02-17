@@ -367,6 +367,11 @@ class UserConfig(QObject):
 
         return [True, "Settings are successfully saved."]
     
+    #config changed signal
+    @Signal
+    def configChanged(self):
+        pass
+    
     # fullName qml property
 
     def getFullName(self):

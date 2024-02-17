@@ -5,8 +5,7 @@ from pathlib import Path
 from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 
-#from core.itu_login import ItuLogin
-
+from core.itu_login import ItuLogin
 from core.user import UserConfig, UserSchedules
 from core.itu_login import ItuLogin
 from core.crn_picker import CrnPicker

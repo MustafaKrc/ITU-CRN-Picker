@@ -188,10 +188,46 @@ Window {
 
                     DragHandler{
                         onActiveChanged: if(active){
-                                             mainWindow.startSystemMove()
-                                             internal.ifMaximizedWindowRestore()
+                                            mainWindow.startSystemMove()
+                                            internal.ifMaximizedWindowRestore()
+                                         } else {
+                                            var screenDetectedWidth = mainWindow.screen.desktopAvailableWidth / Screen.devicePixelRatio
+                                            if(mainWindow.y < 10){
+                                                internal.maximizeRestore()                                                 
+                                            }
+                                            else if(mainWindow.y < mainWindow.screen.desktopAvailableHeight/5){
+                                                if(mainWindow.x + centroid.position.x < 10){
+                                                    mainWindow.x = 0
+                                                    mainWindow.y = 0
+                                                    mainWindow.width = mainWindow.screen.desktopAvailableWidth/2
+                                                    mainWindow.height = mainWindow.screen.desktopAvailableHeight
+                                                    windowStatus = Enums.WindowStatus.Normal
+                                                }
+                                                else if(mainWindow.x + centroid.position.x > screenDetectedWidth -10){
+                                                    mainWindow.x = mainWindow.screen.desktopAvailableWidth / 2
+                                                    mainWindow.y = 0
+                                                    mainWindow.width = mainWindow.screen.desktopAvailableWidth/2
+                                                    mainWindow.height = mainWindow.screen.desktopAvailableHeight
+                                                    windowStatus = Enums.WindowStatus.Normal
+                                                }
+                                            }
+                                            else{
+                                                if(mainWindow.x + centroid.position.x < 10){
+                                                    mainWindow.x = 0
+                                                    mainWindow.width = mainWindow.screen.desktopAvailableWidth/2
+                                                    mainWindow.height = mainWindow.screen.desktopAvailableHeight - mainWindow.y
+                                                    windowStatus = Enums.WindowStatus.Normal
+                                                }
+                                                else if(mainWindow.x + centroid.position.x > screenDetectedWidth - 10){
+                                                    mainWindow.x = mainWindow.screen.desktopAvailableWidth / 2
+                                                    mainWindow.width = mainWindow.screen.desktopAvailableWidth/2
+                                                    mainWindow.height = mainWindow.screen.desktopAvailableHeight - mainWindow.y
+                                                    windowStatus = Enums.WindowStatus.Normal
+                                                }
+                                            }
+
                                          }
-                    }
+                        }
 
                     Image {
                         id: iconApp
