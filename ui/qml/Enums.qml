@@ -8,4 +8,15 @@ QtObject {
         Minimized
     }
 
+    enum SnapPosition{
+        None,
+        Top,
+        TopLeft,
+        TopRight,
+        Left,
+        Right,
+        BottomLeft,
+        BottomRight
+    }
+
 }
