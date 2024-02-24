@@ -247,7 +247,7 @@ class UserConfig(QObject):
             "token_refresh_interval": "3600"
         },
         "schedule": {
-            "current_schedule": ""
+            "current_schedule": "Sample Schedule"
         },
         "about": {
             "version": "0.1.1"

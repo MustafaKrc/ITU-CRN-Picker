@@ -38,9 +38,6 @@ if __name__ == "__main__":
     app_icon = QIcon(icon_path)
     app.setWindowIcon(app_icon)
 
-    #qmlRegisterType(ItuLogin, 'ItuLogin', 1, 0, 'ItuLogin')
-
-    #engine.rootContext().setContextProperty("ItuLogin", ItuLogin())
     rootPathProvider = RootPathProvider()
     engine.rootContext().setContextProperty("rootPathProvider", rootPathProvider)   
 
