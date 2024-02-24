@@ -69,3 +69,38 @@ function snapWindow(position){
     }
 
 }
+
+
+
+function getSnapPosition()
+{
+    var snapPosition = Enums.SnapPosition.None
+    var ScreenDetectedWidth = mainWindow.screen.desktopAvailableWidth / mainWindow.Screen.devicePixelRatio
+
+    if(mainWindow.y < snapMargin){
+        snapPosition = Enums.SnapPosition.Top
+    }
+    else if(mainWindow.x + dragHandler.centroid.position.x < snapMargin){
+        if(mainWindow.y < mainWindow.screen.desktopAvailableHeight/5){
+            snapPosition = Enums.SnapPosition.TopLeft
+        }
+        else if(mainWindow.y > mainWindow.screen.desktopAvailableHeight*4/5){
+            snapPosition = Enums.SnapPosition.BottomLeft
+        }
+        else{
+            snapPosition = Enums.SnapPosition.Left
+        }
+    }
+    else if(mainWindow.x + dragHandler.centroid.position.x > ScreenDetectedWidth - snapMargin){
+        if(mainWindow.y < mainWindow.screen.desktopAvailableHeight/5){
+            snapPosition = Enums.SnapPosition.TopRight
+        }
+        else if(mainWindow.y > mainWindow.screen.desktopAvailableHeight*4/5){
+            snapPosition = Enums.SnapPosition.BottomRight
+        }
+        else{
+            snapPosition = Enums.SnapPosition.Right
+        }
+    }
+    return snapPosition
+}

@@ -37,6 +37,7 @@
         "ui/qml/controls/Notification.qml",
         "ui/qml/controls/SettingInputBox.qml",
         "ui/qml/controls/SettingSwitchButton.qml",
+        "ui/qml/controls/SnapIndicator.qml",
         "ui/qml/controls/ToggleButton.qml",
         "ui/qml/controls/TopBarButton.qml",
         "ui/qml/main.qml",

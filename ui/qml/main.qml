@@ -27,8 +27,8 @@ Window {
     title: qsTr("ITU Crn Picker")
 
     // properties
-
     property int snapMargin: 10
+
     property int windowStatus: Enums.WindowStatus.Maximized
     property int windowMargin : {
         if(windowStatus === Enums.WindowStatus.Normal){
@@ -38,6 +38,26 @@ Window {
         }
     }
     property var activeMenuButton: buttonHome
+
+    onXChanged: {
+        if(!dragHandler.active){
+            // this prevents indicator being shown after snapping the window
+            snapIndicator.snapPosition = Enums.SnapPosition.None
+            return
+        }
+        var position = Utils.getSnapPosition()
+        snapIndicator.snapPosition = position
+    }
+
+    onYChanged: {
+        if(!dragHandler.active){
+            // this prevents indicator being shown after snapping the window
+            snapIndicator.snapPosition = Enums.SnapPosition.None
+            return
+        }
+        var position = Utils.getSnapPosition()
+        snapIndicator.snapPosition = position
+    }
 
     QtObject{
         id: internal
@@ -188,42 +208,15 @@ Window {
                     anchors.topMargin: 0
 
                     DragHandler{
+                        id: dragHandler
                         onActiveChanged: if(active){
-                                            mainWindow.startSystemMove()
                                             internal.ifMaximizedWindowRestore()
-                                         } else {
-                                            var snapPosition = Enums.SnapPosition.None
-                                            var ScreenDetectedWidth = mainWindow.screen.desktopAvailableWidth / Screen.devicePixelRatio
-
-                                            if(mainWindow.y < snapMargin){
-                                                snapPosition = Enums.SnapPosition.Top
+                                            mainWindow.startSystemMove()
+                                         } else { 
+                                            var snapPosition = Utils.getSnapPosition()
+                                            Utils.snapWindow(snapPosition)
+                                            snapIndicator.snapPosition = Enums.SnapPosition.None
                                             }
-                                            else if(mainWindow.x + centroid.position.x < snapMargin){
-                                                if(mainWindow.y < mainWindow.screen.desktopAvailableHeight/5){
-                                                    snapPosition = Enums.SnapPosition.TopLeft
-                                                }
-                                                else if(mainWindow.y > mainWindow.screen.desktopAvailableHeight*4/5){
-                                                    snapPosition = Enums.SnapPosition.BottomLeft
-                                                }
-                                                else{
-                                                    snapPosition = Enums.SnapPosition.Left
-                                                }
-                                            }
-                                            else if(mainWindow.x + centroid.position.x > ScreenDetectedWidth - snapMargin){
-                                                if(mainWindow.y < mainWindow.screen.desktopAvailableHeight/5){
-                                                    snapPosition = Enums.SnapPosition.TopRight
-                                                }
-                                                else if(mainWindow.y > mainWindow.screen.desktopAvailableHeight*4/5){
-                                                    snapPosition = Enums.SnapPosition.BottomRight
-                                                }
-                                                else{
-                                                    snapPosition = Enums.SnapPosition.Right
-                                                }
-                                            }
-                                             
-                                             Utils.snapWindow(snapPosition)
-
-                                         }                    
                         }
 
 
@@ -465,6 +458,20 @@ Window {
                         initialItem: pageHome
                     }
 
+                        SnapIndicator{
+                            id: snapIndicator
+                            borderWidth: 3
+                            gap: 3
+
+                            width: 100
+                            height: 50
+                            
+                            x: Math.max(5, -1* mainWindow.x - leftMenu.width + 5)
+                            y: 5
+
+                            borderColor: "#1c1d20"
+                            snapPosition: Enums.SnapPosition.None
+                        }
                 }
 
                 Rectangle {
