@@ -1,3 +1,6 @@
+# Deprecated
+Please note that this project is no longer actively maintained. We have shifted our focus to a more comprehensive solution, BeeHub, which includes similar functionality and additional features. For the latest updates and improvements, visit [BeeHub](https://beehubapp.com/). We encourage you to check out the new platform, and feel free to reach out if you have any questions or need assistance.
+
 # ITU-CRN-Picker
 Automatic CRN picking application for ITU's kepler website.
 
